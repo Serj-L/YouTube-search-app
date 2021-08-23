@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import { useSelector } from 'react-redux';
+import { Layout, Row, Col } from 'antd';
 
 import { RouterView } from './router';
 import { Header } from './components';
@@ -11,11 +12,21 @@ const App: FC<AppProps> = () => {
   const { isLoggedIn } = useSelector((state: RootState) => state.user);
 
   return (
-    <div>
-      {isLoggedIn && <Header />}
+    <Layout style={{ height: '100vh' }}>
+      {isLoggedIn && (
+        <Layout.Header style={{ background: '#FFF' }}>
+          <Header />
+        </Layout.Header>
+      )}
 
-      <RouterView />
-    </div>
+      <Layout.Content>
+        <Row justify="center">
+          <Col span={23}>
+            <RouterView />
+          </Col>
+        </Row>
+      </Layout.Content>
+    </Layout>
   );
 };
 

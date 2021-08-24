@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import { LoginForm } from '../../components';
 import { login } from '../../api/login';
 import { IUserLoginInput } from '../../api/types';
-import { setIsLoggedIn } from '../../store/userSlice';
+import { setIsLoggedIn, setUserId } from '../../store/userSlice';
 
 interface LoginScreenProps {}
 
@@ -21,11 +21,13 @@ const LoginScreen: FC<LoginScreenProps> = () => {
       message.error('Ошибка авторизации');
       localStorage.removeItem('authToken');
       reduxDispatch(setIsLoggedIn(false));
+      reduxDispatch(setUserId(''));
       return;
     }
 
-    localStorage.setItem('authToken', user.token);
+    localStorage.setItem('authToken', user.userId);
     reduxDispatch(setIsLoggedIn(true));
+    reduxDispatch(setUserId(user.userId));
     routeHistory.push('/');
   };
 

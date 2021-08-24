@@ -14,14 +14,14 @@ const App: FC<AppProps> = () => {
   return (
     <Layout style={{ height: '100vh' }}>
       {isLoggedIn && (
-        <Layout.Header style={{ background: '#FFF' }}>
+        <Layout.Header style={{ background: '#ffffff' }}>
           <Header />
         </Layout.Header>
       )}
 
       <Layout.Content>
         <Row justify="center">
-          <Col span={23}>
+          <Col style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <RouterView />
           </Col>
         </Row>

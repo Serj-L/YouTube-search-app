@@ -5,7 +5,7 @@ export interface IUserLoginInput {
 
 export interface ILoginResponse {
   username: string;
-  token: string;
+  userId: string;
 }
 
 export type TOrder = 'date' | 'rating' | 'relevance' | 'title' | 'videoCount' | 'viewCount';
@@ -15,7 +15,6 @@ export interface ISearchVideoInput {
   order?: TOrder;
   resultsPerPage?: number;
 }
-
 export interface ISearchVideoResponseItem {
   id: {
     videoId: string;
@@ -39,4 +38,13 @@ export interface ISearchVideoResponse {
     totalResults: number;
   }
   items: ISearchVideoResponseItem[]
+}
+export interface ISearchVideoStatsResponseItem {
+  id: string;
+  statistics: {
+    viewCount: string;
+  }
+}
+export interface ISearchVideoStatsResponse {
+  items: ISearchVideoStatsResponseItem[]
 }

@@ -38,6 +38,7 @@ interface IVideoItem {
     height: number;
     url: string;
   }
+
   viewCount?: string;
 }
 interface IYoutubeSearchState {
@@ -45,6 +46,9 @@ interface IYoutubeSearchState {
   totalCount: number;
   isLoading: boolean;
   query: string;
+  queryStatus: string;
+  videoIdList: string;
+  statsQueryStatus: string;
 }
 
 const initialState = {
@@ -52,6 +56,9 @@ const initialState = {
   totalCount: 0,
   isLoading: false,
   query: '',
+  queryStatus: '',
+  videoIdList: '',
+  statsQueryStatus: '',
 } as IYoutubeSearchState;
 
 const youtubeSearchSlice = createSlice({
@@ -65,6 +72,7 @@ const youtubeSearchSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(searchVideos.pending, (state) => {
       state.isLoading = true;
+      state.queryStatus = 'pending';
     });
     builder.addCase(searchVideos.fulfilled, (state, action) => {
       const payload = action.payload as ISearchVideoResponse;
@@ -81,10 +89,17 @@ const youtubeSearchSlice = createSlice({
           url: v.snippet.thumbnails.medium.url,
         },
       }));
+      state.videoIdList = '';
+      state.videos.forEach((video, idx, arr) => {
+        idx < arr.length - 1 ? state.videoIdList += (video.videoId + ',') : state.videoIdList += video.videoId;
+      });
+
       state.isLoading = false;
+      state.queryStatus = 'fulfilled';
     });
     builder.addCase(searchVideos.rejected, (state) => {
       state.isLoading = false;
+      state.queryStatus = 'rejected';
       console.log('videos recive error');
     });
     builder.addCase(searchVideosStats.fulfilled, (state, action) => {
@@ -93,8 +108,10 @@ const youtubeSearchSlice = createSlice({
         video.viewCount = payload.items.filter(el => el.id === video.videoId)[0]?.statistics.viewCount;
         return video;
       });
+      state.statsQueryStatus = 'fulfilled';
     });
     builder.addCase(searchVideosStats.rejected, (state) => {
+      state.statsQueryStatus = 'rejected';
       console.log('view counts recive error');
     });
   },

@@ -1,23 +1,7 @@
-.wrapper {
-  display: flex;
-  max-width: 1040px;
-  margin: 0 auto;
-}
-
-.menuWrapper{
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-}
-
-.menuLogoWrapper {
-  display: flex;
-}
-
 .logoWrapper {
   display: flex;
   align-items: center;
-  margin-right: 40px;
+  margin-right: 20px;
 }
 
 .navlink {

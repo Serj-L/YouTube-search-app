@@ -1,6 +1,6 @@
 import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Input } from 'antd';
+import { Input, Row, Col } from 'antd';
 import { HeartOutlined } from '@ant-design/icons';
 
 import { searchVideos, searchVideosStats, setQuery } from '../../store/youtubeSearchSlice';
@@ -17,13 +17,9 @@ const SearchScreen: FC<SearchScreenProps> = () => {
   const search = useSelector((state: RootState) => state.youtubeSeach);
 
   useEffect (() => {
-    if (search.videos.length === 0) return;
-    let videosId = '';
-    search.videos.forEach((video, idx, arr) => {
-      idx < arr.length - 1 ? videosId += (video.videoId + ',') : videosId += video.videoId;
-    });
-    reduxDispatch(searchVideosStats(videosId));
-  }, [reduxDispatch, search.videos]);
+    if (search.queryStatus !== 'fulfilled') return;
+    reduxDispatch(searchVideosStats(search.videoIdList));
+  }, [reduxDispatch, search.queryStatus, search.videoIdList]);
 
   const makeSearch = (q: string) => {
     if (!q) {
@@ -51,18 +47,31 @@ const SearchScreen: FC<SearchScreenProps> = () => {
   );
 
   return (
-    <div>
-      <h1>Поиск видео</h1>
-      <Search
-        placeholder="Что хотите посмотреть?"
-        enterButton="Найти"
-        size="large"
-        loading={search.isLoading}
-        onSearch={makeSearch}
-        suffix={suffix}
-      />
-      <SearchResults />
-    </div>
+    <Row
+      justify="center"
+      align="middle"
+      style={{ height: '100vh' }}
+    >
+      <Col
+        xs={{ span: 23 }}
+        sm={{ span: 22 }}
+        md={{ span: 18 }}
+        lg={{ span: 16 }}
+      >
+        <h1>Поиск видео</h1>
+        <Search
+          placeholder="Что хотите посмотреть?"
+          enterButton="Найти"
+          size="large"
+          defaultValue={search.query}
+          loading={search.isLoading}
+          onSearch={makeSearch}
+          suffix={suffix}
+        />
+
+        <SearchResults />
+      </Col>
+    </Row>
   );
 };
 

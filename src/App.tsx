@@ -14,14 +14,28 @@ const App: FC<AppProps> = () => {
   return (
     <Layout style={{ height: '100vh' }}>
       {isLoggedIn && (
-        <Layout.Header style={{ background: '#ffffff' }}>
-          <Header />
+        <Layout.Header style={{ background: '#ffffff', padding: 0 }}>
+          <Row justify="center">
+            <Col
+              xs={{ span: 23 }}
+              sm={{ span: 22 }}
+              md={{ span: 18 }}
+              lg={{ span: 16 }}
+            >
+              <Header />
+            </Col>
+          </Row>
         </Layout.Header>
       )}
 
       <Layout.Content>
         <Row justify="center">
-          <Col style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Col
+            xs={{ span: 23 }}
+            sm={{ span: 22 }}
+            md={{ span: 18 }}
+            lg={{ span: 16 }}
+          >
             <RouterView />
           </Col>
         </Row>

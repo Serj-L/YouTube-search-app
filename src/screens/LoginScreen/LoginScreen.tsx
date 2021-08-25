@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { message } from 'antd';
+import { message, Col, Row } from 'antd';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
@@ -32,12 +32,24 @@ const LoginScreen: FC<LoginScreenProps> = () => {
   };
 
   return (
-    <div>
-      <LoginForm
-        initialValues={{ username: '', password: '' }}
-        onSubmit={onSubmit}
-      />
-    </div>
+    <Row
+      justify="center"
+      align="middle"
+      style={{ height: '100vh' }}
+    >
+      <Col
+        xs={{ span: 23 }}
+        sm={{ span: 22 }}
+        md={{ span: 18 }}
+        lg={{ span: 16 }}
+        style={{ maxWidth: 510 }}
+      >
+        <LoginForm
+          initialValues={{ username: '', password: '' }}
+          onSubmit={onSubmit}
+        />
+      </Col>
+    </Row>
   );
 };
 

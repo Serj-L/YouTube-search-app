@@ -1,5 +1,6 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { Form, Input, Button } from 'antd';
+import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 
 import { IUserLoginInput } from '../../api/types';
 
@@ -12,10 +13,28 @@ interface LoginFormProps {
   initialValues: IUserLoginInput;
 }
 
+const stylesForInput = {
+  fontFamily: 'Roboto',
+  fontSize: 20,
+  borderRadius: 5,
+  padding: '12px 15px',
+};
+
+const stylesForBtn = {
+  fontFamily: 'Roboto',
+  fontSize: 20,
+  lineHeight: '100%',
+  width: 170,
+  height: 50,
+  borderRadius: 5,
+};
+
 const LoginForm: FC<LoginFormProps> = ({
   onSubmit,
   initialValues,
 }) => {
+  const [passwordInputType, setPasswordInputType] = useState<string>('password');
+
   return (
     <div className={styles.wrapper}>
       <LogoIcon />
@@ -27,34 +46,57 @@ const LoginForm: FC<LoginFormProps> = ({
         layout="vertical"
         onFinish={onSubmit}
       >
+        <span className={styles.label}>Логин</span>
         <Form.Item
-          label="Логин"
           name="username"
           rules={[{ required: true, message: 'Введите логин' }]}
         >
-          <Input />
+          <Input
+            className={styles.input}
+            style={stylesForInput}
+          />
         </Form.Item>
 
+        <span className={styles.label}>Пароль</span>
         <Form.Item
-          label="Пароль"
           name="password"
           rules={[{ required: true, message: 'Введите пароль' }]}
         >
-          <Input.Password />
+          <div className={styles.inputWrapper}>
+            {
+              passwordInputType === 'password' ?
+                <EyeInvisibleOutlined
+                  className={styles.icon}
+                  onClick={() => setPasswordInputType('text')}
+                /> :
+                <EyeOutlined
+                  className={styles.icon}
+                  onClick={() => setPasswordInputType('password')}
+                />
+            }
+            <Input
+              className={styles.passwInput}
+              style={stylesForInput}
+              type={passwordInputType}
+            />
+          </div>
         </Form.Item>
 
         <Form.Item >
-          <Button
-            className={styles.btn}
-            type="primary"
-            htmlType="submit"
-          >
-          Войти
-          </Button>
+          <div className={styles.btnWrapper}>
+            <Button
+              className={styles.btn}
+              style={stylesForBtn}
+              type="primary"
+              htmlType="submit"
+            >
+              Войти
+            </Button>
+          </div>
         </Form.Item>
+
       </Form>
     </div>
-
   );
 };
 

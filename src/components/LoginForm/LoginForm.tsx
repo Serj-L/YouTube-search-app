@@ -33,7 +33,7 @@ const LoginForm: FC<LoginFormProps> = ({
   onSubmit,
   initialValues,
 }) => {
-  const [passwordInputType, setPasswordInputType] = useState<string>('password');
+  const [passwordInputType, setPasswordInputType] = useState('password');
 
   return (
     <div className={styles.wrapper}>

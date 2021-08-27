@@ -32,7 +32,8 @@ interface IVideoItem {
   videoId: string;
   title: string;
   description: string;
-  chanelTitle: string;
+  channelTitle: string;
+  channelId: string;
   thumbnail: {
     width: number;
     height: number;
@@ -82,7 +83,8 @@ const youtubeSearchSlice = createSlice({
         videoId: v.id.videoId,
         title: v.snippet.channelTitle,
         description: v.snippet.description,
-        chanelTitle: v.snippet.channelTitle,
+        channelTitle: v.snippet.channelTitle,
+        channelId: v.snippet.channelId,
         thumbnail: {
           width: v.snippet.thumbnails.medium.width,
           height: v.snippet.thumbnails.medium.height,

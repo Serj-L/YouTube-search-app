@@ -21,6 +21,7 @@ export interface ISearchVideoResponseItem {
   }
   snippet: {
     channelTitle: string;
+    channelId: string;
     description: string;
     thumbnails: {
       medium: {

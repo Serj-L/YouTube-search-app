@@ -13,7 +13,7 @@ interface HeaderProps {}
 
 const Header: FC<HeaderProps> = () => {
   const reduxDispatch = useDispatch();
-  const [selectedKey, setSelectedKey] = useState<string>('');
+  const [selectedKey, setSelectedKey] = useState('');
   const history = useHistory();
 
   useEffect(() => {

@@ -1,8 +1,34 @@
-.wrapper {
-  max-width: 1040px;
+.searchInfoWrapper {
+  padding: 40px 0 20px;
 }
-.infoControlsWrapper {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+
+.queryTitle,
+.videosCount {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+}
+.queryTitle {
+margin-right: 15px;
+}
+
+.videosCount,
+.viewsCount {
+color: rgba(23, 23, 25, 0.3);
+}
+
+.videoLink,
+.channelLink,
+.viewsCount {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.videoLink {
+  font-weight: 500;
+}
+
+.channelLink {
+  font-weight: 400;
 }

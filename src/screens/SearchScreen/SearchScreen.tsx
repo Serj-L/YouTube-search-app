@@ -50,7 +50,7 @@ const SearchScreen: FC<SearchScreenProps> = () => {
     <Row
       justify="center"
       align="middle"
-      style={{ height: '100vh' }}
+      style={{ minHeight: '80vh' }}
     >
       <Col
         xs={{ span: 23 }}

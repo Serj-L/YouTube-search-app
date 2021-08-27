@@ -69,6 +69,15 @@ const youtubeSearchSlice = createSlice({
     setQuery(state, action: PayloadAction<{ query: string }>) {
       state.query = action.payload.query;
     },
+    logOut(state) {
+      state.videos = [];
+      state.totalCount = 0;
+      state.isLoading = false;
+      state.query = '';
+      state.queryStatus = '';
+      state.videoIdList = '';
+      state.statsQueryStatus = '';
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(searchVideos.pending, (state) => {
@@ -119,5 +128,5 @@ const youtubeSearchSlice = createSlice({
   },
 });
 
-export const { setQuery } = youtubeSearchSlice.actions;
+export const { setQuery, logOut } = youtubeSearchSlice.actions;
 export default youtubeSearchSlice.reducer;

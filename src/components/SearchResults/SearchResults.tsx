@@ -12,8 +12,8 @@ interface SearchResultsProps {}
 const numFormatter = new Intl.NumberFormat('ru');
 
 const SearchResults: FC<SearchResultsProps> = () => {
-  const search = useSelector((state: RootState) => state.youtubeSeach);
-  const videoList = useSelector((state: RootState) => state.youtubeSeach.videos);
+  const search = useSelector((state: RootState) => state.youtubeSearch);
+  const videoList = useSelector((state: RootState) => state.youtubeSearch.videos);
   const [viewType, setViewType] = useState('list');
 
   if (search.queryStatus !== 'fulfilled' && search.statsQueryStatus !== 'fulfilled') return null;

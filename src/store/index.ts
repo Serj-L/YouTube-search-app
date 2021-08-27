@@ -1,12 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import youtubeSeach from './youtubeSearchSlice';
+import youtubeSearch from './youtubeSearchSlice';
 import user from './userSlice';
+import favorites from './favoritesSlice';
 
 export const store = configureStore({
   reducer: {
-    youtubeSeach,
+    youtubeSearch,
     user,
+    favorites,
   },
 });
 

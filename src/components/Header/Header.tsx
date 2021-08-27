@@ -4,6 +4,7 @@ import { NavLink, useHistory } from 'react-router-dom';
 import { Menu, Row, Col } from 'antd';
 
 import { setIsLoggedIn, setUserId } from '../../store/userSlice';
+import { logOut } from '../../store/youtubeSearchSlice';
 
 import { LogoIcon } from '../Logo';
 
@@ -17,7 +18,7 @@ const Header: FC<HeaderProps> = () => {
   const history = useHistory();
 
   useEffect(() => {
-    if (history.location.pathname === '/') {
+    if (history.location.pathname !== '/favorites') {
       setSelectedKey('search');
     } else {
       setSelectedKey('favorites');
@@ -72,6 +73,7 @@ const Header: FC<HeaderProps> = () => {
                 localStorage.removeItem('authToken');
                 reduxDispatch(setIsLoggedIn(false));
                 reduxDispatch(setUserId(''));
+                reduxDispatch(logOut());
               }}>
                   Выйти
             </NavLink>

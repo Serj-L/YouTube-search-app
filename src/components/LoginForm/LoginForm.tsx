@@ -14,14 +14,14 @@ interface LoginFormProps {
 }
 
 const stylesForInput = {
-  fontFamily: 'Roboto',
+  fontFamily: 'Roboto, sans-serif',
   fontSize: 20,
   borderRadius: 5,
   padding: '12px 15px',
 };
 
 const stylesForBtn = {
-  fontFamily: 'Roboto',
+  fontFamily: 'Roboto, sans-serif',
   fontSize: 20,
   lineHeight: '100%',
   width: 170,
@@ -85,7 +85,6 @@ const LoginForm: FC<LoginFormProps> = ({
         <Form.Item >
           <div className={styles.btnWrapper}>
             <Button
-              className={styles.btn}
               style={stylesForBtn}
               type="primary"
               htmlType="submit"

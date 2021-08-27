@@ -1,6 +1,8 @@
-import { FC } from 'react';
-import { useSelector } from 'react-redux';
+import { FC, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Layout, Row, Col } from 'antd';
+
+import { setSavedFavorites } from './store/favoritesSlice';
 
 import { RouterView } from './router';
 import { Header } from './components';
@@ -9,7 +11,15 @@ import { RootState } from './store';
 interface AppProps {}
 
 const App: FC<AppProps> = () => {
-  const { isLoggedIn } = useSelector((state: RootState) => state.user);
+  const reduxDispatch = useDispatch();
+  const { isLoggedIn, userId } = useSelector((state: RootState) => state.user);
+
+  useEffect(() => {
+    const dataFromLocalStorage = localStorage.getItem(userId) || '';
+    const favorites = dataFromLocalStorage ? JSON.parse(dataFromLocalStorage) : [];
+
+    reduxDispatch(setSavedFavorites(favorites));
+  });
 
   return (
     <Layout style={{ minHeight: '100vh' }}>

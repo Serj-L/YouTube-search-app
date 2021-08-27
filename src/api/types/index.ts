@@ -15,6 +15,14 @@ export interface ISearchVideoInput {
   order?: TOrder;
   resultsPerPage?: number;
 }
+
+export interface IFavoritesInput {
+  id: string;
+  query: string;
+  title: string;
+  order: TOrder | null;
+  resultsPerPage: number;
+}
 export interface ISearchVideoResponseItem {
   id: {
     videoId: string;

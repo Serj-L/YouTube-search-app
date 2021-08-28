@@ -50,6 +50,7 @@ interface IYoutubeSearchState {
   queryStatus: string;
   videoIdList: string;
   statsQueryStatus: string;
+  isQueryInFavorites: boolean;
 }
 
 const initialState = {
@@ -60,6 +61,7 @@ const initialState = {
   queryStatus: '',
   videoIdList: '',
   statsQueryStatus: '',
+  isQueryInFavorites: false,
 } as IYoutubeSearchState;
 
 const youtubeSearchSlice = createSlice({
@@ -68,6 +70,9 @@ const youtubeSearchSlice = createSlice({
   reducers: {
     setQuery(state, action: PayloadAction<{ query: string }>) {
       state.query = action.payload.query;
+    },
+    setIsQueryInFavorites(state, action: PayloadAction<{ value: boolean }>) {
+      state.isQueryInFavorites = action.payload.value;
     },
     logOut(state) {
       state.videos = [];
@@ -113,6 +118,9 @@ const youtubeSearchSlice = createSlice({
       state.queryStatus = 'rejected';
       console.log('videos recive error');
     });
+    builder.addCase(searchVideosStats.pending, (state) => {
+      state.statsQueryStatus = 'pending';
+    });
     builder.addCase(searchVideosStats.fulfilled, (state, action) => {
       const payload = action.payload as ISearchVideoStatsResponse;
       state.videos.map(video => {
@@ -128,5 +136,5 @@ const youtubeSearchSlice = createSlice({
   },
 });
 
-export const { setQuery, logOut } = youtubeSearchSlice.actions;
+export const { setQuery, logOut, setIsQueryInFavorites } = youtubeSearchSlice.actions;
 export default youtubeSearchSlice.reducer;

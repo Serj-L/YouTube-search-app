@@ -1,10 +1,12 @@
-import { FC, useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { FC, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useHistory } from 'react-router-dom';
 import { Menu, Row, Col } from 'antd';
 
+import { RootState } from '../../store';
 import { setIsLoggedIn, setUserId } from '../../store/userSlice';
 import { logOut } from '../../store/youtubeSearchSlice';
+import { setCurrentRoute } from '../../store/routeSlice';
 
 import { LogoIcon } from '../Logo';
 
@@ -14,16 +16,13 @@ interface HeaderProps {}
 
 const Header: FC<HeaderProps> = () => {
   const reduxDispatch = useDispatch();
-  const [selectedKey, setSelectedKey] = useState('');
+  const { currentRoute } = useSelector((state: RootState) => state.route);
   const history = useHistory();
 
   useEffect(() => {
-    if (history.location.pathname !== '/favorites') {
-      setSelectedKey('search');
-    } else {
-      setSelectedKey('favorites');
-    }
-  }, [history.location.pathname]);
+    console.log(history.location.pathname);
+    reduxDispatch(setCurrentRoute(history.location.pathname));
+  });
 
   return (
     <Row align="middle" >
@@ -38,22 +37,23 @@ const Header: FC<HeaderProps> = () => {
       <Col flex='auto'>
         <Menu
           mode='horizontal'
-          selectedKeys={[selectedKey]}
+          selectedKeys={[currentRoute]}
           style={{ borderColor: 'transparent' }}
-          onClick={(e) => setSelectedKey(e.key)}
         >
-          <Menu.Item key='search'>
+          <Menu.Item key='/'>
             <NavLink
               to={'/'}
               className={styles.navlink}
+              onClick={() => reduxDispatch(setCurrentRoute('/'))}
             >
                 Поиск
             </NavLink>
           </Menu.Item>
-          <Menu.Item key='favorites'>
+          <Menu.Item key='/favorites'>
             <NavLink
               to={'/favorites'}
               className={styles.navlink}
+              onClick={() => reduxDispatch(setCurrentRoute('/favorites'))}
             >
                 Избранное
             </NavLink>

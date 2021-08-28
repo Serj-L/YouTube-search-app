@@ -1,12 +1,14 @@
 import { FC, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Input, Row, Col, Modal } from 'antd';
-import { HeartOutlined } from '@ant-design/icons';
+import { NavLink } from 'react-router-dom';
+import { Input, Row, Col, Modal, Tooltip, Typography } from 'antd';
+import { HeartOutlined, HeartFilled } from '@ant-design/icons';
 import { v4 as uuidV4 } from 'uuid';
 
 import { RootState } from '../../store';
-import { searchVideos, searchVideosStats, setQuery } from '../../store/youtubeSearchSlice';
+import { searchVideos, searchVideosStats, setQuery, setIsQueryInFavorites } from '../../store/youtubeSearchSlice';
 import { setFavorites } from '../../store/favoritesSlice';
+import { setCurrentRoute } from '../../store/routeSlice';
 
 import { IFavoritesInput } from '../../api/types';
 
@@ -37,23 +39,62 @@ const SearchScreen: FC<SearchScreenProps> = () => {
 
     reduxDispatch(setQuery({ query: searchQuery }));
     reduxDispatch(searchVideos({ q: searchQuery }));
+    reduxDispatch(setIsQueryInFavorites({ value: false }));
   };
 
   const saveToFavorites = (values: IFavoritesInput) => {
     reduxDispatch(setFavorites({ ...values, userId, id: uuidV4() }));
     setIsModalVisible(false);
+    reduxDispatch(setIsQueryInFavorites({ value: true }));
   };
 
   const suffix = (
-    <HeartOutlined
-      style={{
-        fontSize: 16,
-        color: '#1890ff',
-        cursor: 'pointer',
-        visibility: search.videos.length ? 'visible' : 'hidden',
-      }}
-      onClick={() => setIsModalVisible(true)}
-    />
+    <Tooltip
+      placement='bottom'
+      color='#ffffff'
+      title={
+        <>
+          <Typography.Text
+            strong
+            style={{
+              display: 'block',
+              marginBottom: 15,
+            }}
+          >
+            Поиск сохранён в разделе «Избранное»
+          </Typography.Text>
+          <NavLink
+            style={{ marginTop: 15 }}
+            to={'/favorites'}
+            onClick={() => reduxDispatch(setCurrentRoute('/favorites'))}
+          >
+            Перейти в избранное
+          </NavLink>
+        </>
+      }
+      zIndex={search.isQueryInFavorites? 1 : -1}
+    >
+      {search.isQueryInFavorites ?
+        <HeartFilled
+          style={{
+            fontSize: 16,
+            color: '#1890ff',
+            cursor: 'pointer',
+            visibility: search.videos.length ? 'visible' : 'hidden',
+          }}
+          onClick={() => setIsModalVisible(true)}
+        /> :
+        <HeartOutlined
+          style={{
+            fontSize: 16,
+            color: '#1890ff',
+            cursor: 'pointer',
+            visibility: search.videos.length ? 'visible' : 'hidden',
+          }}
+          onClick={() => setIsModalVisible(true)}
+        />
+      }
+    </Tooltip>
   );
 
   return (

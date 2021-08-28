@@ -1,10 +1,13 @@
 import { FC, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { List, Typography, Row, Col, Modal } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 import { RootState } from '../../store';
 import { editFavoriteItem, deleteFavoriteItem } from '../../store/favoritesSlice';
+import { searchVideos, setQuery, setIsQueryInFavorites } from '../../store/youtubeSearchSlice';
+import { setCurrentRoute } from '../../store/routeSlice';
 
 import { IFavoritesInput } from '../../api/types';
 
@@ -18,6 +21,7 @@ const { confirm } = Modal;
 
 const FavoritesScreen: FC<FavoritesScreenProps> = () => {
   const reduxDispatch = useDispatch();
+  const history = useHistory();
   const { favorites } = useSelector((state: RootState) => state.favorites);
   const { userId } = useSelector((state: RootState) => state.user);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -31,7 +35,7 @@ const FavoritesScreen: FC<FavoritesScreenProps> = () => {
 
   const showConfirm = (title: string, id: string, userId: string) => {
     confirm({
-      title: `Вы хотите удалить запрос ${title} из Избранного?`,
+      title: `Вы хотите удалить «${title}» из Избранного?`,
       icon: <ExclamationCircleOutlined />,
       onOk() {
         reduxDispatch(deleteFavoriteItem({ id, userId }));
@@ -42,6 +46,20 @@ const FavoritesScreen: FC<FavoritesScreenProps> = () => {
   const onEditFavoriteItem = (values: IFavoritesInput) => {
     reduxDispatch(editFavoriteItem({ ...values, userId, id: activeItem.id }));
     setIsModalVisible(false);
+  };
+
+  const makeSearch = (id: string) => {
+    const searchInput = favorites.filter(el => el.id === id)[0];
+    reduxDispatch(setQuery({ query: searchInput.query }));
+    reduxDispatch(searchVideos({
+      q: searchInput.query,
+      order: searchInput.order ? searchInput.order : 'relevance',
+      resultsPerPage: searchInput.resultsPerPage,
+      maxResults: searchInput.resultsPerPage }));
+
+    history.push('/');
+    reduxDispatch(setCurrentRoute('/'));
+    reduxDispatch(setIsQueryInFavorites({ value: true }));
   };
 
   return (
@@ -84,7 +102,7 @@ const FavoritesScreen: FC<FavoritesScreenProps> = () => {
               >
                 <Typography.Text
                   className={styles.itemTitle}
-                  onClick={() => console.log('search')}
+                  onClick={() => makeSearch(item.id)}
                 >
                   {item.title}
                 </Typography.Text>

@@ -8,8 +8,8 @@ const instance = axios.create({
     part: 'snippet',
     key: process.env.REACT_APP_YOUTUBE_KEY,
     q: '',
-    maxResults: 12,
     order: 'relevance',
+    maxResults: 12,
     resultsPerPage: 12,
   },
 });

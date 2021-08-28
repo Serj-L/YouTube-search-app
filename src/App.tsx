@@ -2,11 +2,11 @@ import { FC, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Layout, Row, Col } from 'antd';
 
+import { RootState } from './store';
 import { setSavedFavorites } from './store/favoritesSlice';
 
 import { RouterView } from './router';
 import { Header } from './components';
-import { RootState } from './store';
 
 interface AppProps {}
 

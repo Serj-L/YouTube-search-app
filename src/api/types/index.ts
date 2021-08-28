@@ -14,6 +14,7 @@ export interface ISearchVideoInput {
   q: string;
   order?: TOrder;
   resultsPerPage?: number;
+  maxResults?: number;
 }
 
 export interface IFavoritesInput {

@@ -20,7 +20,6 @@ const Header: FC<HeaderProps> = () => {
   const history = useHistory();
 
   useEffect(() => {
-    console.log(history.location.pathname);
     reduxDispatch(setCurrentRoute(history.location.pathname));
   });
 

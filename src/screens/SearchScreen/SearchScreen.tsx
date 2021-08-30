@@ -1,8 +1,8 @@
 import { FC, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { NavLink } from 'react-router-dom';
-import { Input, Row, Col, Modal, Tooltip, Typography } from 'antd';
-import { HeartOutlined, HeartFilled } from '@ant-design/icons';
+import { NavLink, useHistory } from 'react-router-dom';
+import { Input, Form, Button, Row, Col, Modal, Tooltip, Typography, notification, Spin } from 'antd';
+import { HeartOutlined, HeartFilled, LoadingOutlined } from '@ant-design/icons';
 import { v4 as uuidV4 } from 'uuid';
 
 import { RootState } from '../../store';
@@ -14,16 +14,43 @@ import { IFavoritesInput } from '../../api/types';
 
 import { SearchResults, FavoritesForm } from '../../components/index';
 
-const { Search } = Input;
+import styles from './SearchScreen.module.css';
 
 interface SearchScreenProps {}
+
+const isInFavorites = (searchQuery: string, favorites: IFavoritesInput[] ): boolean => {
+  return favorites.filter(el => el.query === searchQuery).length ? true : false;
+};
+
+const openNotificationWithIcon = (type: 'success' | 'info' | 'warning' | 'error',
+  message: string,
+  description: string,
+  placement: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight') => {
+  notification[type]({
+    message,
+    description,
+    placement,
+  });
+};
 
 const SearchScreen: FC<SearchScreenProps> = () => {
   const reduxDispatch = useDispatch();
   const search = useSelector((state: RootState) => state.youtubeSearch);
   const { userId } = useSelector((state: RootState) => state.user);
+  const { favorites } = useSelector((state: RootState) => state.favorites);
+  const history = useHistory();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect (() => {
+    reduxDispatch(setIsQueryInFavorites({ value: isInFavorites(search.query, favorites) }));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[]);
+
+  useEffect (() => {
+    if (!search.errorMessage) return;
+    openNotificationWithIcon('error', 'Ошибка загрузки данных', search.errorMessage, 'topLeft');
+  }, [search.errorMessage]);
 
   useEffect (() => {
     setSearchQuery(search.query);
@@ -39,7 +66,7 @@ const SearchScreen: FC<SearchScreenProps> = () => {
 
     reduxDispatch(setQuery({ query: searchQuery }));
     reduxDispatch(searchVideos({ q: searchQuery }));
-    reduxDispatch(setIsQueryInFavorites({ value: false }));
+    reduxDispatch(setIsQueryInFavorites({ value: isInFavorites(searchQuery, favorites) }));
   };
 
   const saveToFavorites = (values: IFavoritesInput) => {
@@ -47,55 +74,6 @@ const SearchScreen: FC<SearchScreenProps> = () => {
     setIsModalVisible(false);
     reduxDispatch(setIsQueryInFavorites({ value: true }));
   };
-
-  const suffix = (
-    <Tooltip
-      placement='bottom'
-      color='#ffffff'
-      title={
-        <>
-          <Typography.Text
-            strong
-            style={{
-              display: 'block',
-              marginBottom: 15,
-            }}
-          >
-            Поиск сохранён в разделе «Избранное»
-          </Typography.Text>
-          <NavLink
-            style={{ marginTop: 15 }}
-            to={'/favorites'}
-            onClick={() => reduxDispatch(setCurrentRoute('/favorites'))}
-          >
-            Перейти в избранное
-          </NavLink>
-        </>
-      }
-      zIndex={search.isQueryInFavorites? 1 : -1}
-    >
-      {search.isQueryInFavorites ?
-        <HeartFilled
-          style={{
-            fontSize: 16,
-            color: '#1890ff',
-            cursor: 'pointer',
-            visibility: search.videos.length ? 'visible' : 'hidden',
-          }}
-          onClick={() => setIsModalVisible(true)}
-        /> :
-        <HeartOutlined
-          style={{
-            fontSize: 16,
-            color: '#1890ff',
-            cursor: 'pointer',
-            visibility: search.videos.length ? 'visible' : 'hidden',
-          }}
-          onClick={() => setIsModalVisible(true)}
-        />
-      }
-    </Tooltip>
-  );
 
   return (
     <>
@@ -110,22 +88,127 @@ const SearchScreen: FC<SearchScreenProps> = () => {
           md={{ span: 18 }}
           lg={{ span: 16 }}
         >
-          <h1>Поиск видео</h1>
-          <Search
-            placeholder="Что хотите посмотреть?"
-            enterButton="Найти"
-            size="large"
-            loading={search.isLoading}
-            suffix={suffix}
-            defaultValue={search.query}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onSearch={makeSearch}
-          />
+          {
+            search.queryStatus !== 'fulfilled' ?
+              <h1 className={styles.searchTitle}>Поиск видео</h1> :
+              <h2 className={styles.searchResultTitle}>Поиск видео</h2>
+          }
+          <Form
+            layout="vertical"
+            className={styles.form}
+            onFinish={makeSearch}
+          >
+            <Form.Item
+              className={styles.formItem}
+              style={{
+                flex: 1,
+                maxWidth: search.queryStatus !== 'fulfilled' ? 535 : 'unset',
+              }}
+            >
+              <div className={styles.inputWrapper}>
+                <Tooltip
+                  className={styles.toolTipWrapper}
+                  placement='bottom'
+                  color='#ffffff'
+                  title={
+                    <>
+                      <Typography.Text
+                        strong
+                        style={{
+                          display: 'block',
+                          marginBottom: 15,
+                        }}
+                      >
+                        Поиск сохранён в разделе «Избранное»
+                      </Typography.Text>
+                      <NavLink
+                        style={{ marginTop: 15 }}
+                        to={'/favorites'}
+                        onClick={() => reduxDispatch(setCurrentRoute('/favorites'))}
+                      >
+                        Перейти в избранное
+                      </NavLink>
+                    </>
+                  }
+                  zIndex={search.isQueryInFavorites? 1 : -1}
+                >
+                  {search.isQueryInFavorites ?
+                    <HeartFilled
+                      className={styles.icon}
+                      style={{
+                        color: '#1890FF',
+                        visibility: search.videos.length ? 'visible' : 'hidden',
+                      }}
+                      onClick={() => {
+                        history.push('/favorites');
+                        reduxDispatch(setCurrentRoute('/favorites'));
+                      }}
+                    /> :
+                    <HeartOutlined
+                      className={styles.icon}
+                      style={{
+                        color: '#1890FF',
+                        visibility: search.videos.length ? 'visible' : 'hidden',
+                      }}
+                      onClick={() => setIsModalVisible(true)}
+                    />
+                  }
+                </Tooltip>
+                <Input
+                  className={styles.input}
+                  style={{
+                    fontFamily: 'Roboto, sans-serif',
+                    fontSize: 20,
+                    width: '100%',
+                    borderRadius: '5px 0px 0px 5px',
+                    padding: '12px 15px',
+                  }}
+                  placeholder="Что хотите посмотреть?"
+                  defaultValue={search.query}
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    reduxDispatch(setIsQueryInFavorites({ value: isInFavorites(e.target.value, favorites) }));
+                  }}
+                />
+              </div>
+            </Form.Item>
+            <Form.Item className={styles.formItem}>
+              <Button
+                type='primary'
+                htmlType="submit"
+                style={{
+                  fontFamily: 'Roboto, sans-serif',
+                  fontSize: 20,
+                  lineHeight: '100%',
+                  width: 150,
+                  height: 57,
+                  borderRadius: '0px 5px 5px 0px',
+                }}
+              >
+                <Spin
+                  spinning={search.isLoading}
+                  indicator={
+                    <LoadingOutlined
+                      style={{
+                        position: 'absolute',
+                        fontSize: 24,
+                        color: '#ffffff',
+                        top: '30%',
+                        left: '5%',
+                      }}
+                    />
+                  }
+                />
+                Найти
+              </Button>
+            </Form.Item>
+          </Form>
 
           <SearchResults />
         </Col>
       </Row>
+
       <Modal
         title={null}
         visible={isModalVisible}

@@ -1,0 +1,67 @@
+
+.searchTitle,
+.searchResultTitle {
+  font-family: 'Roboto', sans-serif;
+}
+
+.searchTitle {
+  font-size: 36px;
+  text-align: center;
+  padding-bottom: 40px;
+}
+
+.searchResultTitle {
+  font-size: 28px;
+  padding: 40px 0 12px;
+}
+
+.form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.formItem {
+  margin: 0;
+}
+
+.input:hover,
+.input:focus{
+  background: rgba(197, 228, 249, 0.3);
+}
+
+.inputWrapper {
+  position: relative;
+}
+
+.icon svg {
+  position: absolute;
+  right: 3%;
+  top: 70%;
+  font-size: 24px;
+  cursor: pointer;
+  transform: scale(-1, 1) translateY(-50%);
+  z-index: 1;
+}
+
+.toolTipWrapper {
+  position: absolute;
+  width: 23px;
+  height: 28px;
+  right: 3%;
+  top: 17%;
+}
+
+.icon:hover ~ .input {
+  background: rgba(197, 228, 249, 0.3);
+  border-color: #40a9ff;
+}
+
+.loaderIndicator {
+  position: absolute;
+  font-size: 24px;
+  color: #ffffff;
+  top: 50%;
+  left: 4%;
+}

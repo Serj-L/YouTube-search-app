@@ -104,7 +104,7 @@ const FavoritesScreen: FC<FavoritesScreenProps> = () => {
                   className={styles.itemTitle}
                   onClick={() => makeSearch(item.id)}
                 >
-                  {item.title}
+                  {item.query}
                 </Typography.Text>
               </List.Item>
             )}

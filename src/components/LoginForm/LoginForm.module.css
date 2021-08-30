@@ -40,13 +40,6 @@
   position: relative;
 }
 
-.iconWrapper {
-  position: absolute;
-  right: 3%;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
 .icon svg {
   position: absolute;
   right: 3%;

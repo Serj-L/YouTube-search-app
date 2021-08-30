@@ -5,26 +5,26 @@ import { ISearchVideoInput, ISearchVideoResponse, ISearchVideoStatsResponse } fr
 
 export const searchVideos = createAsyncThunk(
   'youtubeSearch/searchVideos',
-  async (params: ISearchVideoInput) => {
+  async (params: ISearchVideoInput, { rejectWithValue }) => {
     try {
       const response = await getVideos(params);
 
       return response;
     } catch(err) {
-      return err;
+      return rejectWithValue(err.message);
     }
   },
 );
 
 export const searchVideosStats = createAsyncThunk(
   'youtubeSearch/getVideosStats',
-  async (videoId: string) => {
+  async (videoId: string, { rejectWithValue }) => {
     try {
       const response = await getVideosStats(videoId);
 
       return response;
     } catch(err) {
-      return err;
+      return rejectWithValue(err.message);
     }
   },
 );
@@ -48,6 +48,7 @@ interface IYoutubeSearchState {
   isLoading: boolean;
   query: string;
   queryStatus: string;
+  errorMessage: string;
   videoIdList: string;
   statsQueryStatus: string;
   isQueryInFavorites: boolean;
@@ -59,6 +60,7 @@ const initialState = {
   isLoading: false,
   query: '',
   queryStatus: '',
+  errorMessage: '',
   videoIdList: '',
   statsQueryStatus: '',
   isQueryInFavorites: false,
@@ -80,6 +82,7 @@ const youtubeSearchSlice = createSlice({
       state.isLoading = false;
       state.query = '';
       state.queryStatus = '';
+      state.errorMessage = '';
       state.videoIdList = '';
       state.statsQueryStatus = '';
     },
@@ -88,8 +91,10 @@ const youtubeSearchSlice = createSlice({
     builder.addCase(searchVideos.pending, (state) => {
       state.isLoading = true;
       state.queryStatus = 'pending';
+      state.errorMessage = '';
     });
     builder.addCase(searchVideos.fulfilled, (state, action) => {
+      console.log(action.payload);
       const payload = action.payload as ISearchVideoResponse;
 
       state.totalCount = payload.pageInfo.totalResults;
@@ -112,11 +117,12 @@ const youtubeSearchSlice = createSlice({
 
       state.isLoading = false;
       state.queryStatus = 'fulfilled';
+      state.errorMessage = '';
     });
-    builder.addCase(searchVideos.rejected, (state) => {
+    builder.addCase(searchVideos.rejected, (state, action) => {
       state.isLoading = false;
       state.queryStatus = 'rejected';
-      console.log('videos recive error');
+      state.errorMessage = `${action.payload}`;
     });
     builder.addCase(searchVideosStats.pending, (state) => {
       state.statsQueryStatus = 'pending';
@@ -129,9 +135,9 @@ const youtubeSearchSlice = createSlice({
       });
       state.statsQueryStatus = 'fulfilled';
     });
-    builder.addCase(searchVideosStats.rejected, (state) => {
+    builder.addCase(searchVideosStats.rejected, (state, action) => {
       state.statsQueryStatus = 'rejected';
-      console.log('view counts recive error');
+      console.log('view counts recive error', action.payload);
     });
   },
 });

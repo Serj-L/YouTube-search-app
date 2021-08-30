@@ -70,6 +70,7 @@ const SearchResults: FC<SearchResultsProps> = () => {
             <List.Item.Meta
               avatar={
                 <Image
+                  preview={false}
                   width={155}
                   height={85}
                   fallback='../../img/NoPreview.svg'
@@ -103,9 +104,10 @@ const SearchResults: FC<SearchResultsProps> = () => {
                     {item.channelTitle}
                   </Typography.Link>
                   <br />
-                  {Number(item.viewCount) / 1000 >= 1 ?
-                    `${numFormatter.format(Math.round(Number(item.viewCount) / 1000))} тыс. просмотров` :
-                    `${item.viewCount} просмотров`}
+                  {!item.viewCount ? 'Нет данных о количестве просмотров' :
+                    Number(item.viewCount) / 1000 >= 1 ?
+                      `${numFormatter.format(Math.round(Number(item.viewCount) / 1000))} тыс. просмотров` :
+                      `${item.viewCount} просмотров`}
                 </Typography.Text> }
             />
           </List.Item>

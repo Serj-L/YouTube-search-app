@@ -85,11 +85,12 @@ const SearchScreen: FC<SearchScreenProps> = () => {
         <Col
           xs={{ span: 23 }}
           sm={{ span: 22 }}
-          md={{ span: 18 }}
-          lg={{ span: 16 }}
+          md={{ span: 22 }}
+          lg={{ span: 20 }}
+          xxl={{ span: 16 }}
         >
           {
-            search.queryStatus !== 'fulfilled' ?
+            search.queryStatus !== 'fulfilled' && !search.videos.length ?
               <h1 className={styles.searchTitle}>Поиск видео</h1> :
               <h2 className={styles.searchResultTitle}>Поиск видео</h2>
           }
@@ -99,10 +100,10 @@ const SearchScreen: FC<SearchScreenProps> = () => {
             onFinish={makeSearch}
           >
             <Form.Item
-              className={styles.formItem}
               style={{
                 flex: 1,
-                maxWidth: search.queryStatus !== 'fulfilled' ? 535 : 'unset',
+                maxWidth: search.queryStatus !== 'fulfilled' && !search.videos.length ? 535 : 'unset',
+                marginBottom: 0,
               }}
             >
               <div className={styles.inputWrapper}>
@@ -126,7 +127,7 @@ const SearchScreen: FC<SearchScreenProps> = () => {
                         to={'/favorites'}
                         onClick={() => reduxDispatch(setCurrentRoute('/favorites'))}
                       >
-                        Перейти в избранное
+                        Перейти в «Избранное»
                       </NavLink>
                     </>
                   }
@@ -159,9 +160,10 @@ const SearchScreen: FC<SearchScreenProps> = () => {
                   style={{
                     fontFamily: 'Roboto, sans-serif',
                     fontSize: 20,
+                    lineHeight: 0,
                     width: '100%',
                     borderRadius: '5px 0px 0px 5px',
-                    padding: '12px 15px',
+                    padding: '12px 35px 12px 15px',
                   }}
                   placeholder="Что хотите посмотреть?"
                   defaultValue={search.query}
@@ -173,16 +175,16 @@ const SearchScreen: FC<SearchScreenProps> = () => {
                 />
               </div>
             </Form.Item>
-            <Form.Item className={styles.formItem}>
+            <Form.Item style={{ marginBottom: 0 }}>
               <Button
+                className={styles.searchBtn}
                 type='primary'
                 htmlType="submit"
                 style={{
                   fontFamily: 'Roboto, sans-serif',
                   fontSize: 20,
                   lineHeight: '100%',
-                  width: 150,
-                  height: 57,
+                  height: 50,
                   borderRadius: '0px 5px 5px 0px',
                 }}
               >
@@ -194,8 +196,8 @@ const SearchScreen: FC<SearchScreenProps> = () => {
                         position: 'absolute',
                         fontSize: 24,
                         color: '#ffffff',
-                        top: '30%',
-                        left: '5%',
+                        top: '25%',
+                        left: '7%',
                       }}
                     />
                   }
@@ -231,7 +233,7 @@ const SearchScreen: FC<SearchScreenProps> = () => {
             id: '',
             title: '',
             query: searchQuery,
-            order: null,
+            order: 'relevance',
             resultsPerPage: 12,
           }}
           onSubmit={saveToFavorites}

@@ -22,10 +22,6 @@
   width: 100%;
 }
 
-.formItem {
-  margin: 0;
-}
-
 .input:hover,
 .input:focus{
   background: rgba(197, 228, 249, 0.3);
@@ -37,8 +33,8 @@
 
 .icon svg {
   position: absolute;
-  right: 3%;
-  top: 70%;
+  right: 0;
+  top: 60%;
   font-size: 24px;
   cursor: pointer;
   transform: scale(-1, 1) translateY(-50%);
@@ -65,3 +61,15 @@
   top: 50%;
   left: 4%;
 }
+
+.searchBtn {
+  width: 150px;
+}
+
+/* adaptive */
+@media (max-width: 591px) {
+  .searchBtn {
+    width: 135px;
+  }
+}
+/* adaptive */

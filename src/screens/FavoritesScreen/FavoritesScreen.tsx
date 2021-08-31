@@ -1,7 +1,7 @@
 import { FC, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { List, Typography, Row, Col, Modal } from 'antd';
+import { List, Typography, Row, Col, Modal, notification } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 import { RootState } from '../../store';
@@ -17,7 +17,22 @@ import styles from './FavoritesScreen.module.css';
 
 interface FavoritesScreenProps {}
 
+const isInFavorites = (searchQuery: string, id: string, favorites: IFavoritesInput[] ): boolean => {
+  return favorites.filter(el => el.query === searchQuery && el.id !== id).length ? true : false;
+};
+
 const { confirm } = Modal;
+
+const openNotificationWithIcon = (type: 'success' | 'info' | 'warning' | 'error',
+  message: string,
+  description: string,
+  placement: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight') => {
+  notification[type]({
+    message,
+    description,
+    placement,
+  });
+};
 
 const FavoritesScreen: FC<FavoritesScreenProps> = () => {
   const reduxDispatch = useDispatch();
@@ -29,21 +44,54 @@ const FavoritesScreen: FC<FavoritesScreenProps> = () => {
     id: '',
     title: '',
     query: '',
-    order: null,
+    order: 'relevance',
     resultsPerPage: 12,
   });
 
   const showConfirm = (title: string, id: string, userId: string) => {
     confirm({
-      title: `Вы хотите удалить «${title}» из Избранного?`,
+      title: `Удалить запрос «${title}» из «Избранного»?`,
       icon: <ExclamationCircleOutlined />,
+      okText: 'Удалить',
+      cancelText: 'Отмена',
       onOk() {
         reduxDispatch(deleteFavoriteItem({ id, userId }));
       },
     });
   };
 
+  const showConfirmOpenQuery = (favoriteItem: IFavoritesInput) => {
+    const orderName = {
+      relevance: 'Без сортировки',
+      title: 'По названию',
+      date: 'По дате релиза',
+      viewCount: 'По количеству просмотров',
+      rating: 'По рейтингу',
+    };
+
+    confirm({
+      title: 'Выполнить запрос ?',
+      content:
+      <>
+        <Typography.Text style={{ display: 'block', marginBottom: 5 }}>Название: «{favoriteItem.title}»</Typography.Text>
+        <Typography.Text style={{ display: 'block', marginBottom: 5 }}>Запрос: «{favoriteItem.query}»</Typography.Text>
+        <Typography.Text style={{ display: 'block', marginBottom: 5 }}>Сортировка: «{orderName[favoriteItem.order]}»</Typography.Text>
+        <Typography.Text style={{ display: 'block' }}>Max количество видео: «{favoriteItem.resultsPerPage}»</Typography.Text>
+      </>,
+      okText: 'Выполнить',
+      cancelText: 'Отмена',
+      icon: <ExclamationCircleOutlined />,
+      onOk() {
+        makeSearch(favoriteItem.id);
+      },
+    });
+  };
+
   const onEditFavoriteItem = (values: IFavoritesInput) => {
+    if (isInFavorites(values.query, activeItem.id, favorites)) {
+      openNotificationWithIcon('warning', `Запрос «${values.query}» уже сохранен в «Избранном»`, 'Отредактируйте, пожалуйста, текст запроса, что бы сохранить изменения', 'topRight');
+      return;
+    }
     reduxDispatch(editFavoriteItem({ ...values, userId, id: activeItem.id }));
     setIsModalVisible(false);
   };
@@ -70,8 +118,9 @@ const FavoritesScreen: FC<FavoritesScreenProps> = () => {
         <Col
           xs={{ span: 23 }}
           sm={{ span: 22 }}
-          md={{ span: 18 }}
-          lg={{ span: 16 }}
+          md={{ span: 22 }}
+          lg={{ span: 20 }}
+          xxl={{ span: 16 }}
         >
           <h2 className={styles.title}>Избранное</h2>
           <List
@@ -80,6 +129,7 @@ const FavoritesScreen: FC<FavoritesScreenProps> = () => {
             renderItem={item => (
               <List.Item
                 key={item.id}
+                style={{ flexWrap: 'nowrap' }}
                 actions={[
                   <a
                     className={styles.editLink}
@@ -94,18 +144,20 @@ const FavoritesScreen: FC<FavoritesScreenProps> = () => {
                   <a
                     className={styles.deleteLink}
                     key="list-loadmore-more"
-                    onClick={() => showConfirm(item.title, item.id, userId)}
+                    onClick={() => showConfirm(item.query, item.id, userId)}
                   >
                   Удалить
                   </a>,
                 ]}
               >
-                <Typography.Text
+                <Typography.Paragraph
                   className={styles.itemTitle}
-                  onClick={() => makeSearch(item.id)}
+                  style={{ margin: 0 }}
+                  ellipsis={{ rows: 1, expandable: false }}
+                  onClick={() => showConfirmOpenQuery(item)}
                 >
                   {item.query}
-                </Typography.Text>
+                </Typography.Paragraph>
               </List.Item>
             )}
           />

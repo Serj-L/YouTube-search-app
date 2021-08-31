@@ -69,26 +69,33 @@ const SearchResults: FC<SearchResultsProps> = () => {
           <List.Item key={item.videoId}>
             <List.Item.Meta
               avatar={
-                <Image
-                  preview={false}
-                  width={155}
-                  height={85}
-                  fallback='../../img/NoPreview.svg'
-                  src={item.thumbnail.url}
-                  alt='Video preview'
-                />
+                <Typography.Link
+                  href={`https://www.youtube.com/watch?v=${item.videoId}`}
+                  target='_blank'
+                >
+                  <Image
+                    preview={false}
+                    width={157}
+                    height={88}
+                    fallback='../../img/NoPreview.svg'
+                    src={item.thumbnail.url}
+                    alt='Video preview'
+                  />
+                </Typography.Link>
               }
               title={
-                <Typography.Text>
+                <Typography.Paragraph
+                  ellipsis={{ rows: 2, expandable: false }}
+                  style={{ marginBottom: 8 }}
+                >
                   <Typography.Link
                     className={styles.videoLink}
                     href={`https://www.youtube.com/watch?v=${item.videoId}`}
                     target='_blank'
-                    style={{ color: '#000000' }}
                   >
                     {item.title} | {item.description}
                   </Typography.Link>
-                </Typography.Text>
+                </Typography.Paragraph>
               }
               description={
                 <Typography.Text
@@ -160,75 +167,79 @@ const SearchResults: FC<SearchResultsProps> = () => {
             </Space>
           </Col>
         </Row>
-        <List
-          grid={{
-            gutter: 20,
-            xs: 1,
-            sm: 1,
-            md: 2,
-            lg: 2,
-            xl: 3,
-            xxl: 4,
-          }}
-          dataSource={videoList}
-          renderItem={item => (
-            <List.Item key={item.videoId}>
-              <Card
-                bodyStyle={{
-                  padding: 0,
-                }}
-                style={{
-                  width: 245,
-                  backgroundColor: 'transparent',
-                  border: 'none',
-                }}
-                cover={
-                  <Image
-                    width={245}
-                    height={138}
-                    fallback='../../img/NoPreview.svg'
-                    src={item.thumbnail.url}
-                    alt='Video preview'
-                  />
-                }
+        <ul className={styles.videoList}>
+          {videoList.map(video => {
+            return (
+              <li
+                key = {video.videoId}
+                className={styles.videoListItem}
               >
-                <Card.Meta
-                  title={
-                    <Typography.Text>
-                      <Typography.Link
-                        className={styles.videoLink}
-                        href={`https://www.youtube.com/watch?v=${item.videoId}`}
-                        target='_blank'
-                        style={{ color: '#000000' }}
-                      >
-                        {item.title} | {item.description}
-                      </Typography.Link>
-                    </Typography.Text>
-                  }
-                  description={
-                    <Typography.Text
-                      className={styles.viewsCount}
-                      style={{ color: 'rgba(23, 23, 25, 0.3)' }}
+                <Card
+                  bodyStyle={{
+                    padding: 0,
+                  }}
+                  style={{
+                    width: 245,
+                    backgroundColor: 'transparent',
+                    border: 'none',
+                  }}
+                  cover={
+                    <Typography.Link
+                      href={`https://www.youtube.com/watch?v=${video.videoId}`}
+                      target='_blank'
                     >
-                      <Typography.Link
-                        className={styles.channelLink}
-                        href={`https://www.youtube.com/channel/${item.channelId}`}
-                        target='_blank'
-                        style={{ color: 'rgba(23, 23, 25, 0.3)' }}
-                      >
-                        {item.channelTitle}
-                      </Typography.Link>
-                      <br />
-                      {Number(item.viewCount) / 1000 >= 1 ?
-                        `${numFormatter.format(Math.round(Number(item.viewCount) / 1000))} тыс. просмотров` :
-                        `${item.viewCount} просмотров`}
-                    </Typography.Text>
+                      <Image
+                        preview={false}
+                        width={245}
+                        height={138}
+                        fallback='../../img/NoPreview.svg'
+                        src={video.thumbnail.url}
+                        alt='Video preview'
+                      />
+                    </Typography.Link>
                   }
-                />
-              </Card>
-            </List.Item>
-          )}
-        />
+                >
+                  <Card.Meta
+                    description={
+                      <>
+                        <Typography.Paragraph
+                          ellipsis={{ rows: 2, expandable: false }}
+                          style={{ marginBottom: 8 }}
+                        >
+                          <Typography.Link
+                            className={styles.videoLink}
+                            href={`https://www.youtube.com/watch?v=${video.videoId}`}
+                            target='_blank'
+                          >
+                            {video.title} | {video.description}
+                          </Typography.Link>
+                        </Typography.Paragraph>
+                        <Typography.Text
+                          className={styles.viewsCount}
+                          style={{ color: 'rgba(23, 23, 25, 0.3)' }}
+                        >
+                          <Typography.Link
+                            className={styles.channelLink}
+                            href={`https://www.youtube.com/channel/${video.channelId}`}
+                            target='_blank'
+                            style={{ color: 'rgba(23, 23, 25, 0.3)' }}
+                          >
+                            {video.channelTitle}
+                          </Typography.Link>
+                          <br />
+                          {Number(video.viewCount) / 1000 >= 1 ?
+                            `${numFormatter.format(Math.round(Number(video.viewCount) / 1000))} тыс. просмотров` :
+                            `${video.viewCount} просмотров`}
+                        </Typography.Text>
+                      </>
+                    }
+                  />
+                </Card>
+              </li>
+            );
+          })
+          }
+        </ul>
       </div>
     );
 };

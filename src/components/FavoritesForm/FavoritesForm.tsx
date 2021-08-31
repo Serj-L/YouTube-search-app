@@ -15,6 +15,7 @@ interface FavoritesFormProps {
 
 const stylesForInput = {
   fontFamily: 'Roboto, sans-serif',
+  lineHeight: 0,
   fontSize: 20,
   borderRadius: 5,
   padding: '12px 15px',
@@ -56,7 +57,10 @@ const FavoritesForm: FC<FavoritesFormProps> = ({
       onFinish={onSubmit}
     >
       <span className={styles.label}>Запрос</span>
-      <Form.Item name='query'>
+      <Form.Item
+        name='query'
+        rules={[{ required: true, message: 'Введите запрос' }]}
+      >
         <Input
           style={stylesForInput}
           type='text'
@@ -70,6 +74,7 @@ const FavoritesForm: FC<FavoritesFormProps> = ({
         rules={[{ required: true, message: 'Введите название' }]}
       >
         <Input
+          placeholder='Укажите название'
           style={stylesForInput}
           type='text'
         />
@@ -80,21 +85,26 @@ const FavoritesForm: FC<FavoritesFormProps> = ({
       <Form.Item name='order'>
         <Select
           size='large'
-          placeholder='Без сортировки'
+          style={{
+            fontFamily: 'Roboto, sans-serif',
+            fontSize: 20,
+          }}
           suffixIcon={<CaretDownOutlined />}
         >
+          <Select.Option value='relevance'>Без сортировки</Select.Option>
           <Select.Option value='title'>По названию</Select.Option>
           <Select.Option value='date'>По дате релиза</Select.Option>
           <Select.Option value='viewCount'>По количеству просмотров</Select.Option>
           <Select.Option value='rating'>По рейтингу</Select.Option>
-          <Select.Option value='relevance'>По релевантности</Select.Option>
         </Select>
       </Form.Item>
 
+      <span className={styles.label}>Максимальное количество</span>
       <Row align='middle'>
         <Col flex='auto'>
           <Form.Item name='resultsPerPage'>
             <Slider
+              style={{ marginRight: 20 }}
               min={12}
               max={50}
               value={sliderInputValue}
@@ -105,10 +115,16 @@ const FavoritesForm: FC<FavoritesFormProps> = ({
         <Col flex='none'>
           <Form.Item name='resultsPerPage'>
             <InputNumber
+              style={{
+                fontFamily: 'Roboto, sans-serif',
+                lineHeight: 0,
+                fontSize: 20,
+                borderRadius: 5,
+                padding: '5px 0px 5px 20px',
+              }}
               min={12}
               max={50}
               size='large'
-              style={{ marginLeft: 20 }}
               value={sliderInputValue}
               onChange={(value) => setSliderInputValue(value)}
             />

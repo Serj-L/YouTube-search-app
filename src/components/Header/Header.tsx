@@ -24,7 +24,10 @@ const Header: FC<HeaderProps> = () => {
   });
 
   return (
-    <Row align="middle" >
+    <Row
+      align="middle"
+      wrap={false}
+    >
       <Col flex='none'>
         <div className={styles.logoWrapper}>
           <LogoIcon

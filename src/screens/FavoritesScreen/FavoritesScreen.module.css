@@ -4,6 +4,7 @@
   font-weight: 400;
   line-height: 40px;
   padding: 40px 0;
+  margin: 0;
 }
 
 .favoritesList {
@@ -42,3 +43,11 @@
 .deleteLink:focus {
   color: rgba(255, 0, 0, 1);
 }
+
+/* adaptive */
+@media (max-width: 767px) {
+  .title {
+    padding: 20px 0;
+  }
+}
+/* adaptive */

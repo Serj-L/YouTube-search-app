@@ -8,7 +8,7 @@ export interface ILoginResponse {
   userId: string;
 }
 
-export type TOrder = 'date' | 'rating' | 'relevance' | 'title' | 'videoCount' | 'viewCount';
+export type TOrder = 'date' | 'rating' | 'relevance' | 'title' | 'viewCount';
 
 export interface ISearchVideoInput {
   q: string;
@@ -21,7 +21,7 @@ export interface IFavoritesInput {
   id: string;
   query: string;
   title: string;
-  order: TOrder | null;
+  order: TOrder;
   resultsPerPage: number;
 }
 export interface ISearchVideoResponseItem {

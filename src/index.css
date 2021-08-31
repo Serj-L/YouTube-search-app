@@ -3,3 +3,25 @@
 .ant-menu-horizontal > .ant-menu-item a {
   color: #1390E5;
 }
+
+a.ant-typography {
+  color:#000000
+}
+
+.ant-select-single.ant-select-lg:not(.ant-select-customize-input) .ant-select-selector {
+  height: 50px;
+  border-radius: 5px;
+  padding-top: 4px;
+}
+
+/* adaptive */
+@media (max-width: 409px) {
+  .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu {
+    padding: 0 10px;
+  }
+  .ant-menu-horizontal > .ant-menu-item::after, .ant-menu-horizontal > .ant-menu-submenu::after {
+    right: 10px;
+    left: 10px;
+  }
+}
+/* adaptive */

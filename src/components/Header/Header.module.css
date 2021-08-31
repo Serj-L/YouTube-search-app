@@ -10,3 +10,14 @@
   font-size: 18px;
   line-height: 28px;
 }
+
+/* adaptive */
+@media (max-width: 409px) {
+  .logoWrapper {
+    margin-right: 0;
+  }
+  .menuItem {
+    padding: 0 10px;
+  }
+}
+/* adaptive */

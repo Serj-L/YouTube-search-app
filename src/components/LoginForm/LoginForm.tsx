@@ -16,6 +16,7 @@ interface LoginFormProps {
 const stylesForInput = {
   fontFamily: 'Roboto, sans-serif',
   fontSize: 20,
+  lineHeight: 0,
   borderRadius: 5,
   padding: '12px 15px',
 };

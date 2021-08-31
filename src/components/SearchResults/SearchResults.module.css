@@ -1,5 +1,21 @@
 .searchInfoWrapper {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
   padding: 40px 0 20px;
+}
+
+.videoList {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 0;
+}
+
+.videoListItem {
+  list-style: none;
 }
 
 .queryTitle,

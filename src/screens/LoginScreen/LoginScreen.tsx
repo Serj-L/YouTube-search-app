@@ -40,8 +40,9 @@ const LoginScreen: FC<LoginScreenProps> = () => {
       <Col
         xs={{ span: 23 }}
         sm={{ span: 22 }}
-        md={{ span: 18 }}
-        lg={{ span: 16 }}
+        md={{ span: 22 }}
+        lg={{ span: 20 }}
+        xxl={{ span: 16 }}
         style={{ maxWidth: 510 }}
       >
         <LoginForm

@@ -234,7 +234,7 @@ const SearchScreen: FC<SearchScreenProps> = () => {
             title: '',
             query: searchQuery,
             order: 'relevance',
-            resultsPerPage: 12,
+            resultsPerPage: 1,
           }}
           onSubmit={saveToFavorites}
           onCancel={() => setIsModalVisible(false)}

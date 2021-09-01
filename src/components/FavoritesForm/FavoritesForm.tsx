@@ -105,7 +105,7 @@ const FavoritesForm: FC<FavoritesFormProps> = ({
           <Form.Item name='resultsPerPage'>
             <Slider
               style={{ marginRight: 20 }}
-              min={12}
+              min={1}
               max={50}
               value={sliderInputValue}
               onChange={(value) => setSliderInputValue(value)}
@@ -122,7 +122,7 @@ const FavoritesForm: FC<FavoritesFormProps> = ({
                 borderRadius: 5,
                 padding: '5px 0px 5px 20px',
               }}
-              min={12}
+              min={1}
               max={50}
               size='large'
               value={sliderInputValue}

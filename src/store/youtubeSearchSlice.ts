@@ -94,7 +94,6 @@ const youtubeSearchSlice = createSlice({
       state.errorMessage = '';
     });
     builder.addCase(searchVideos.fulfilled, (state, action) => {
-      console.log(action.payload);
       const payload = action.payload as ISearchVideoResponse;
 
       state.totalCount = payload.pageInfo.totalResults;

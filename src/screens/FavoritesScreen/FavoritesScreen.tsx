@@ -1,7 +1,7 @@
 import { FC, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { List, Typography, Row, Col, Modal, notification } from 'antd';
+import { List, Typography, Row, Col, Modal, notification, Empty } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 import { RootState } from '../../store';
@@ -36,7 +36,7 @@ const openNotificationWithIcon = (type: 'success' | 'info' | 'warning' | 'error'
 
 const FavoritesScreen: FC<FavoritesScreenProps> = () => {
   const reduxDispatch = useDispatch();
-  const history = useHistory();
+  const routeHistory = useHistory();
   const { favorites } = useSelector((state: RootState) => state.favorites);
   const { userId } = useSelector((state: RootState) => state.user);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -105,7 +105,7 @@ const FavoritesScreen: FC<FavoritesScreenProps> = () => {
       resultsPerPage: searchInput.resultsPerPage,
       maxResults: searchInput.resultsPerPage }));
 
-    history.push('/');
+    routeHistory.push('/');
     reduxDispatch(setCurrentRoute('/'));
     reduxDispatch(setIsQueryInFavorites({ value: true }));
   };
@@ -123,46 +123,56 @@ const FavoritesScreen: FC<FavoritesScreenProps> = () => {
           xxl={{ span: 16 }}
         >
           <h2 className={styles.title}>Избранное</h2>
-          <List
-            className={styles.favoritesList}
-            dataSource={favorites}
-            renderItem={item => (
-              <List.Item
-                key={item.id}
-                style={{ flexWrap: 'nowrap' }}
-                actions={[
-                  <a
-                    className={styles.editLink}
-                    key="list-loadmore-edit"
-                    onClick={() => {
-                      setActiveItem(favorites.filter(el => el.id === item.id)[0]);
-                      setIsModalVisible(true);
-                    }}
-                  >
-                  Изменить
-                  </a>,
-                  <a
-                    className={styles.deleteLink}
-                    key="list-loadmore-more"
-                    onClick={() => showConfirm(item.query, item.id, userId)}
-                  >
-                  Удалить
-                  </a>,
-                ]}
-              >
-                <Typography.Paragraph
-                  className={styles.itemTitle}
-                  style={{ margin: 0 }}
-                  ellipsis={{ rows: 1, expandable: false }}
-                  onClick={() => showConfirmOpenQuery(item)}
+          {!favorites.length ?
+            <Row
+              justify="center"
+            >
+              <Col flex='auto'>
+                <Empty description='У Вас пока нет сохраненных запросов.'/>
+              </Col>
+            </Row> :
+            <List
+              className={styles.favoritesList}
+              dataSource={favorites}
+              renderItem={item => (
+                <List.Item
+                  key={item.id}
+                  style={{ flexWrap: 'nowrap' }}
+                  actions={[
+                    <a
+                      className={styles.editLink}
+                      key="list-loadmore-edit"
+                      onClick={() => {
+                        setActiveItem(favorites.filter(el => el.id === item.id)[0]);
+                        setIsModalVisible(true);
+                      }}
+                    >
+                      Изменить
+                    </a>,
+                    <a
+                      className={styles.deleteLink}
+                      key="list-loadmore-more"
+                      onClick={() => showConfirm(item.query, item.id, userId)}
+                    >
+                      Удалить
+                    </a>,
+                  ]}
                 >
-                  {item.query}
-                </Typography.Paragraph>
-              </List.Item>
-            )}
-          />
+                  <Typography.Paragraph
+                    className={styles.itemTitle}
+                    style={{ margin: 0 }}
+                    ellipsis={{ rows: 1, expandable: false }}
+                    onClick={() => showConfirmOpenQuery(item)}
+                  >
+                    {item.query}
+                  </Typography.Paragraph>
+                </List.Item>
+              )}
+            />
+          }
         </Col>
       </Row>
+
       <Modal
         title={null}
         visible={isModalVisible}

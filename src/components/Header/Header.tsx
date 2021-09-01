@@ -1,6 +1,6 @@
 import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { NavLink, useHistory } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { Menu, Row, Col } from 'antd';
 
 import { RootState } from '../../store';
@@ -17,10 +17,10 @@ interface HeaderProps {}
 const Header: FC<HeaderProps> = () => {
   const reduxDispatch = useDispatch();
   const { currentRoute } = useSelector((state: RootState) => state.route);
-  const history = useHistory();
+  const { pathname } = useLocation();
 
   useEffect(() => {
-    reduxDispatch(setCurrentRoute(history.location.pathname));
+    reduxDispatch(setCurrentRoute(pathname));
   });
 
   return (

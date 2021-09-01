@@ -81,7 +81,6 @@ const FavoritesForm: FC<FavoritesFormProps> = ({
       </Form.Item>
 
       <span className={styles.label}>Сортировать по</span>
-
       <Form.Item name='order'>
         <Select
           size='large'

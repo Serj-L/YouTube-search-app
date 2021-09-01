@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useHistory } from 'react-router-dom';
-import { Input, Form, Button, Row, Col, Modal, Tooltip, Typography, notification, Spin } from 'antd';
+import { Input, Form, Button, Row, Col, Modal, Tooltip, Typography, notification, Spin, Empty } from 'antd';
 import { HeartOutlined, HeartFilled, LoadingOutlined } from '@ant-design/icons';
 import { v4 as uuidV4 } from 'uuid';
 
@@ -38,7 +38,7 @@ const SearchScreen: FC<SearchScreenProps> = () => {
   const search = useSelector((state: RootState) => state.youtubeSearch);
   const { userId } = useSelector((state: RootState) => state.user);
   const { favorites } = useSelector((state: RootState) => state.favorites);
-  const history = useHistory();
+  const routeHistory = useHistory();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -141,7 +141,7 @@ const SearchScreen: FC<SearchScreenProps> = () => {
                         visibility: search.videos.length ? 'visible' : 'hidden',
                       }}
                       onClick={() => {
-                        history.push('/favorites');
+                        routeHistory.push('/favorites');
                         reduxDispatch(setCurrentRoute('/favorites'));
                       }}
                     /> :
@@ -207,7 +207,17 @@ const SearchScreen: FC<SearchScreenProps> = () => {
             </Form.Item>
           </Form>
 
-          <SearchResults />
+          {(search.queryStatus === 'fulfilled' || search.queryStatus === 'rejected') && !search.videos.length ?
+            <Row
+              justify="center"
+              style={{ marginTop: 30 }}
+            >
+              <Col flex='auto'>
+                <Empty description={search.queryStatus === 'fulfilled' ? 'По Вашему запросу видео не найдены.' : 'Ошибка загрузки данных.'}/>
+              </Col>
+            </Row> :
+            <SearchResults />
+          }
         </Col>
       </Row>
 

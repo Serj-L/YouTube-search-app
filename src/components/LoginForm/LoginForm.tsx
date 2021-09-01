@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useState, useRef } from 'react';
 import { Form, Input, Button } from 'antd';
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 
@@ -35,6 +35,7 @@ const LoginForm: FC<LoginFormProps> = ({
   initialValues,
 }) => {
   const [passwordInputType, setPasswordInputType] = useState('password');
+  const passwordInputRef = useRef<Input>(null);
 
   return (
     <div className={styles.wrapper}>
@@ -68,17 +69,24 @@ const LoginForm: FC<LoginFormProps> = ({
               passwordInputType === 'password' ?
                 <EyeInvisibleOutlined
                   className={styles.icon}
-                  onClick={() => setPasswordInputType('text')}
+                  onClick={() => {
+                    setPasswordInputType('text');
+                    passwordInputRef.current?.focus();
+                  }}
                 /> :
                 <EyeOutlined
                   className={styles.icon}
-                  onClick={() => setPasswordInputType('password')}
+                  onClick={() =>{
+                    setPasswordInputType('password');
+                    passwordInputRef.current?.focus();
+                  }}
                 />
             }
             <Input
               className={styles.passwInput}
               style={stylesForInput}
               type={passwordInputType}
+              ref={passwordInputRef}
             />
           </div>
         </Form.Item>

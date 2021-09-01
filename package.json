@@ -1,6 +1,7 @@
 {
   "name": "sibdev-test",
   "version": "0.1.0",
+  "homepage": "https://serj-l.github.io/YouTube-search-app",
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^4.6.3",
@@ -14,6 +15,7 @@
     "@types/react-dom": "^17.0.9",
     "antd": "^4.16.12",
     "axios": "^0.21.1",
+    "gh-pages": "^3.2.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.4",
@@ -22,6 +24,8 @@
     "typescript": "^4.3.5"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "eslint": "eslint --ext .js,.jsx,.ts,.tsx src",
     "build": "react-scripts build",

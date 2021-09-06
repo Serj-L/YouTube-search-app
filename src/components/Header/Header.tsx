@@ -4,7 +4,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { Menu, Row, Col } from 'antd';
 
 import { RootState } from '../../store';
-import { setIsLoggedIn, setUserId } from '../../store/userSlice';
+import { setUserId } from '../../store/userSlice';
 import { logOut } from '../../store/youtubeSearchSlice';
 import { setCurrentRoute } from '../../store/routeSlice';
 
@@ -73,11 +73,10 @@ const Header: FC<HeaderProps> = () => {
               to={'/login'}
               onClick={() => {
                 localStorage.removeItem('authToken');
-                reduxDispatch(setIsLoggedIn(false));
                 reduxDispatch(setUserId(''));
                 reduxDispatch(logOut());
               }}>
-                  Выйти
+                Выйти
             </NavLink>
           </Menu.Item>
         </Menu>

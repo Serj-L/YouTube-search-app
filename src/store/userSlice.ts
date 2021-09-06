@@ -1,14 +1,28 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { message } from 'antd';
+
+import { getUserId } from '../api/firebaseAuth';
+import { IUserLoginInput, IFirebaseLoginResponse } from '../api/types';
+
+export const getUserIdThunk = createAsyncThunk(
+  'user/getUserId',
+  async (data: IUserLoginInput, { rejectWithValue }) => {
+    try {
+      const response = await getUserId(data);
+
+      return response;
+    } catch(err) {
+      return rejectWithValue(err.code);
+    }
+  },
+);
 
 interface IUserState {
-  username: string;
-  isLoggedIn: boolean;
   userId: string;
 }
 
 const initialState = {
   userId: localStorage.getItem('authToken') || '',
-  isLoggedIn: !!localStorage.getItem('authToken'),
 } as IUserState;
 
 const userSlice = createSlice({
@@ -18,11 +32,20 @@ const userSlice = createSlice({
     setUserId(state, action: PayloadAction<string>) {
       state.userId = action.payload;
     },
-    setIsLoggedIn(state, action: PayloadAction<boolean>) {
-      state.isLoggedIn = action.payload;
-    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(getUserIdThunk.fulfilled, (state, action) => {
+      const payload = action.payload as IFirebaseLoginResponse;
+
+      state.userId = payload.uid;
+      localStorage.setItem('authToken', payload.uid);
+    });
+    builder.addCase(getUserIdThunk.rejected, (state, action) => {
+      state.userId = '';
+      message.error(`Ошибка: ${action.payload}`);
+    });
   },
 });
 
-export const { setUserId, setIsLoggedIn } = userSlice.actions;
+export const { setUserId } = userSlice.actions;
 export default userSlice.reducer;

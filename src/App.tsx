@@ -12,7 +12,7 @@ interface AppProps {}
 
 const App: FC<AppProps> = () => {
   const reduxDispatch = useDispatch();
-  const { isLoggedIn, userId } = useSelector((state: RootState) => state.user);
+  const { userId } = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     const dataFromLocalStorage = localStorage.getItem(userId) || '';
@@ -23,7 +23,7 @@ const App: FC<AppProps> = () => {
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      {isLoggedIn && (
+      {userId && (
         <Layout.Header style={{ background: '#ffffff', padding: 0 }}>
           <Row justify="center">
             <Col

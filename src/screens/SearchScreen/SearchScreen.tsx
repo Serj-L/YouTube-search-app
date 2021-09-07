@@ -36,7 +36,6 @@ const openNotificationWithIcon = (type: 'success' | 'info' | 'warning' | 'error'
 const SearchScreen: FC<SearchScreenProps> = () => {
   const reduxDispatch = useDispatch();
   const search = useSelector((state: RootState) => state.youtubeSearch);
-  const { userId } = useSelector((state: RootState) => state.user);
   const { favorites } = useSelector((state: RootState) => state.favorites);
   const routeHistory = useHistory();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -45,11 +44,11 @@ const SearchScreen: FC<SearchScreenProps> = () => {
   useEffect (() => {
     reduxDispatch(setIsQueryInFavorites({ value: isInFavorites(search.query, favorites) }));
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[]);
+  }, []);
 
   useEffect (() => {
     if (!search.errorMessage) return;
-    openNotificationWithIcon('error', 'Ошибка загрузки данных', search.errorMessage, 'topLeft');
+    openNotificationWithIcon('error', 'Ошибка загрузки данных', search.errorMessage, 'topRight');
   }, [search.errorMessage]);
 
   useEffect (() => {
@@ -61,8 +60,11 @@ const SearchScreen: FC<SearchScreenProps> = () => {
     reduxDispatch(searchVideosStats(search.videoIdList));
   }, [reduxDispatch, search.queryStatus, search.videoIdList]);
 
-  const makeSearch = (q: string) => {
-    if (!q) return;
+  const makeSearch = () => {
+    if (!searchQuery) {
+      openNotificationWithIcon('warning', 'Поиск не может быть осуществлен.', 'Введите, пожалуйста, поисковый запрос.', 'topRight');
+      return;
+    }
 
     reduxDispatch(setQuery({ query: searchQuery }));
     reduxDispatch(searchVideos({ q: searchQuery }));
@@ -70,7 +72,7 @@ const SearchScreen: FC<SearchScreenProps> = () => {
   };
 
   const saveToFavorites = (values: IFavoritesInput) => {
-    reduxDispatch(setFavorites({ ...values, userId, id: uuidV4() }));
+    reduxDispatch(setFavorites({ ...values, id: uuidV4() }));
     setIsModalVisible(false);
     reduxDispatch(setIsQueryInFavorites({ value: true }));
   };

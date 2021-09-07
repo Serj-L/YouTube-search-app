@@ -6,6 +6,7 @@ import { Menu, Row, Col } from 'antd';
 import { RootState } from '../../store';
 import { setUserId } from '../../store/userSlice';
 import { logOut } from '../../store/youtubeSearchSlice';
+import { setFavoritesToInitialState } from '../../store/favoritesSlice';
 import { setCurrentRoute } from '../../store/routeSlice';
 
 import { LogoIcon } from '../Logo';
@@ -75,6 +76,7 @@ const Header: FC<HeaderProps> = () => {
                 localStorage.removeItem('authToken');
                 reduxDispatch(setUserId(''));
                 reduxDispatch(logOut());
+                reduxDispatch(setFavoritesToInitialState());
               }}>
                 Выйти
             </NavLink>

@@ -11,6 +11,7 @@ const instance = axios.create({
     order: 'relevance',
     maxResults: 12,
     resultsPerPage: 12,
+    type: 'video',
   },
 });
 

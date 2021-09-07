@@ -1,21 +1,8 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { message } from 'antd';
 
-import { getUserId } from '../api/firebaseAuth';
+import { getUserId } from '../api/firebase';
 import { IUserLoginInput, IFirebaseLoginResponse } from '../api/types';
-
-export const getUserIdThunk = createAsyncThunk(
-  'user/getUserId',
-  async (data: IUserLoginInput, { rejectWithValue }) => {
-    try {
-      const response = await getUserId(data);
-
-      return response;
-    } catch(err) {
-      return rejectWithValue(err.code);
-    }
-  },
-);
 
 interface IUserState {
   userId: string;
@@ -24,6 +11,19 @@ interface IUserState {
 const initialState = {
   userId: localStorage.getItem('authToken') || '',
 } as IUserState;
+
+export const getUserIdThunk = createAsyncThunk(
+  'user/getUserIdThunk',
+  async (data: IUserLoginInput, { rejectWithValue }) => {
+    try {
+      const response = await getUserId(data);
+
+      return response;
+    } catch(err: any) {
+      return rejectWithValue(err.code);
+    }
+  },
+);
 
 const userSlice = createSlice({
   name: 'user',

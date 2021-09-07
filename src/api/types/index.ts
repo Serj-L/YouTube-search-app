@@ -15,6 +15,7 @@ export interface ISearchVideoInput {
   order?: TOrder;
   resultsPerPage?: number;
   maxResults?: number;
+  type?: string;
 }
 
 export interface IFavoritesInput {
@@ -23,6 +24,11 @@ export interface IFavoritesInput {
   title: string;
   order: TOrder;
   resultsPerPage: number;
+}
+
+export interface IFavoritesFirebase {
+  userId: string;
+  favorites: IFavoritesInput[];
 }
 export interface ISearchVideoResponseItem {
   id: {

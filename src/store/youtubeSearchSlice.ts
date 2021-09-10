@@ -10,7 +10,7 @@ export const searchVideos = createAsyncThunk(
       const response = await getVideos(params);
 
       return response;
-    } catch(err) {
+    } catch(err: any) {
       return rejectWithValue(err.message);
     }
   },
@@ -23,7 +23,7 @@ export const searchVideosStats = createAsyncThunk(
       const response = await getVideosStats(videoId);
 
       return response;
-    } catch(err) {
+    } catch(err: any) {
       return rejectWithValue(err.message);
     }
   },

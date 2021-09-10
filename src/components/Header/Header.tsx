@@ -1,11 +1,13 @@
 import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useLocation } from 'react-router-dom';
+import { getAuth, signOut } from 'firebase/auth';
 import { Menu, Row, Col } from 'antd';
 
 import { RootState } from '../../store';
-import { setIsLoggedIn, setUserId } from '../../store/userSlice';
+import { setUserId } from '../../store/userSlice';
 import { logOut } from '../../store/youtubeSearchSlice';
+import { setFavoritesToInitialState } from '../../store/favoritesSlice';
 import { setCurrentRoute } from '../../store/routeSlice';
 
 import { LogoIcon } from '../Logo';
@@ -20,8 +22,9 @@ const Header: FC<HeaderProps> = () => {
   const { pathname } = useLocation();
 
   useEffect(() => {
+    if (pathname === currentRoute) return;
     reduxDispatch(setCurrentRoute(pathname));
-  });
+  }, [pathname, currentRoute, reduxDispatch]);
 
   return (
     <Row
@@ -48,7 +51,7 @@ const Header: FC<HeaderProps> = () => {
               className={styles.navlink}
               onClick={() => reduxDispatch(setCurrentRoute('/'))}
             >
-                Поиск
+              Поиск
             </NavLink>
           </Menu.Item>
           <Menu.Item key='/favorites'>
@@ -57,7 +60,7 @@ const Header: FC<HeaderProps> = () => {
               className={styles.navlink}
               onClick={() => reduxDispatch(setCurrentRoute('/favorites'))}
             >
-                Избранное
+              Избранное
             </NavLink>
           </Menu.Item>
         </Menu>
@@ -72,12 +75,14 @@ const Header: FC<HeaderProps> = () => {
               className={styles.navlink}
               to={'/login'}
               onClick={() => {
+                signOut(getAuth());
                 localStorage.removeItem('authToken');
-                reduxDispatch(setIsLoggedIn(false));
                 reduxDispatch(setUserId(''));
                 reduxDispatch(logOut());
-              }}>
-                  Выйти
+                reduxDispatch(setFavoritesToInitialState());
+              }}
+            >
+              Выйти
             </NavLink>
           </Menu.Item>
         </Menu>

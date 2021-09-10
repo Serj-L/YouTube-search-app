@@ -1,5 +1,5 @@
 import { FC, useState, useRef } from 'react';
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Switch, Button } from 'antd';
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 
 import { IUserLoginInput } from '../../api/types';
@@ -10,7 +10,9 @@ import styles from './LoginForm.module.css';
 
 interface LoginFormProps {
   onSubmit: (values: IUserLoginInput) => void;
+  onSwitchChange: () => void;
   initialValues: IUserLoginInput;
+  isSignedForm: boolean;
 }
 
 const stylesForInput = {
@@ -32,7 +34,9 @@ const stylesForBtn = {
 
 const LoginForm: FC<LoginFormProps> = ({
   onSubmit,
+  onSwitchChange,
   initialValues,
+  isSignedForm,
 }) => {
   const [passwordInputType, setPasswordInputType] = useState('password');
   const passwordInputRef = useRef<Input>(null);
@@ -40,7 +44,7 @@ const LoginForm: FC<LoginFormProps> = ({
   return (
     <div className={styles.wrapper}>
       <LogoIcon />
-      <h3 className={styles.title}>Вход</h3>
+      <h3 className={styles.title}>{isSignedForm ? 'Регистрация и вход' : 'Вход'}</h3>
       <Form
         className={styles.form}
         name="basic"
@@ -48,9 +52,9 @@ const LoginForm: FC<LoginFormProps> = ({
         layout="vertical"
         onFinish={onSubmit}
       >
-        <span className={styles.label}>Логин</span>
+        <span className={styles.label}>Логин (Email)</span>
         <Form.Item
-          name="username"
+          name="userEmail"
           rules={[{ required: true, message: 'Введите логин' }]}
         >
           <Input
@@ -91,6 +95,13 @@ const LoginForm: FC<LoginFormProps> = ({
           </div>
         </Form.Item>
 
+        <span className={styles.label}>Регистрация нового пользователя и вход</span>
+        <Form.Item
+          name='isSignedForm'
+          valuePropName='checked'>
+          <Switch onChange={onSwitchChange}/>
+        </Form.Item>
+
         <Form.Item >
           <div className={styles.btnWrapper}>
             <Button
@@ -98,7 +109,7 @@ const LoginForm: FC<LoginFormProps> = ({
               type="primary"
               htmlType="submit"
             >
-              Войти
+              {isSignedForm ? 'Регистрация' : 'Вход'}
             </Button>
           </div>
         </Form.Item>

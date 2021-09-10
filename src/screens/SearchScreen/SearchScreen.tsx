@@ -19,7 +19,7 @@ import styles from './SearchScreen.module.css';
 interface SearchScreenProps {}
 
 const isInFavorites = (searchQuery: string, favorites: IFavoritesInput[] ): boolean => {
-  return favorites.filter(el => el.query === searchQuery).length ? true : false;
+  return favorites.filter(el => el.query.trim() === searchQuery.trim()).length ? true : false;
 };
 
 const openNotificationWithIcon = (type: 'success' | 'info' | 'warning' | 'error',
@@ -36,20 +36,22 @@ const openNotificationWithIcon = (type: 'success' | 'info' | 'warning' | 'error'
 const SearchScreen: FC<SearchScreenProps> = () => {
   const reduxDispatch = useDispatch();
   const search = useSelector((state: RootState) => state.youtubeSearch);
-  const { userId } = useSelector((state: RootState) => state.user);
   const { favorites } = useSelector((state: RootState) => state.favorites);
   const routeHistory = useHistory();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect (() => {
-    reduxDispatch(setIsQueryInFavorites({ value: isInFavorites(search.query, favorites) }));
+    const checkIsQueryInFavorite = isInFavorites(search.query, favorites);
+
+    if (checkIsQueryInFavorite === search.isQueryInFavorites) return;
+    reduxDispatch(setIsQueryInFavorites({ value: checkIsQueryInFavorite }));
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[]);
+  }, []);
 
   useEffect (() => {
     if (!search.errorMessage) return;
-    openNotificationWithIcon('error', 'Ошибка загрузки данных', search.errorMessage, 'topLeft');
+    openNotificationWithIcon('error', 'Ошибка загрузки данных', search.errorMessage, 'topRight');
   }, [search.errorMessage]);
 
   useEffect (() => {
@@ -61,16 +63,21 @@ const SearchScreen: FC<SearchScreenProps> = () => {
     reduxDispatch(searchVideosStats(search.videoIdList));
   }, [reduxDispatch, search.queryStatus, search.videoIdList]);
 
-  const makeSearch = (q: string) => {
-    if (!q) return;
+  const makeSearch = () => {
+    if (!searchQuery) {
+      openNotificationWithIcon('warning', 'Поиск не может быть осуществлен.', 'Введите, пожалуйста, поисковый запрос.', 'topRight');
+      return;
+    }
 
-    reduxDispatch(setQuery({ query: searchQuery }));
-    reduxDispatch(searchVideos({ q: searchQuery }));
-    reduxDispatch(setIsQueryInFavorites({ value: isInFavorites(searchQuery, favorites) }));
+    reduxDispatch(setQuery({ query: searchQuery.trim() }));
+    reduxDispatch(searchVideos({ q: searchQuery.trim() }));
+
+    const checkIsQueryInFavorite = isInFavorites(searchQuery, favorites);
+    if (checkIsQueryInFavorite !== search.isQueryInFavorites) reduxDispatch(setIsQueryInFavorites({ value: checkIsQueryInFavorite }));
   };
 
   const saveToFavorites = (values: IFavoritesInput) => {
-    reduxDispatch(setFavorites({ ...values, userId, id: uuidV4() }));
+    reduxDispatch(setFavorites({ ...values, id: uuidV4() }));
     setIsModalVisible(false);
     reduxDispatch(setIsQueryInFavorites({ value: true }));
   };
@@ -170,7 +177,8 @@ const SearchScreen: FC<SearchScreenProps> = () => {
                   value={searchQuery}
                   onChange={(e) => {
                     setSearchQuery(e.target.value);
-                    reduxDispatch(setIsQueryInFavorites({ value: isInFavorites(e.target.value, favorites) }));
+                    const checkIsQueryInFavorite = isInFavorites(e.target.value, favorites);
+                    if (checkIsQueryInFavorite !== search.isQueryInFavorites) reduxDispatch(setIsQueryInFavorites({ value: checkIsQueryInFavorite }));
                   }}
                 />
               </div>
@@ -242,7 +250,7 @@ const SearchScreen: FC<SearchScreenProps> = () => {
           initialValues={{
             id: '',
             title: '',
-            query: searchQuery,
+            query: searchQuery.trim(),
             order: 'relevance',
             resultsPerPage: 1,
           }}

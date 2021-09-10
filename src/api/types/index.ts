@@ -1,11 +1,11 @@
 export interface IUserLoginInput {
-  username: string;
+  userEmail: string;
   password: string;
+  isSignedForm: boolean;
 }
 
-export interface ILoginResponse {
-  username: string;
-  userId: string;
+export interface IFirebaseLoginResponse {
+  uid: string;
 }
 
 export type TOrder = 'date' | 'rating' | 'relevance' | 'title' | 'viewCount';
@@ -15,6 +15,7 @@ export interface ISearchVideoInput {
   order?: TOrder;
   resultsPerPage?: number;
   maxResults?: number;
+  type?: string;
 }
 
 export interface IFavoritesInput {
@@ -23,6 +24,11 @@ export interface IFavoritesInput {
   title: string;
   order: TOrder;
   resultsPerPage: number;
+}
+
+export interface IFavoritesFirebase {
+  userId: string;
+  favorites: IFavoritesInput[];
 }
 export interface ISearchVideoResponseItem {
   id: {

@@ -1,34 +1,33 @@
-import { FC } from 'react';
-import { message, Col, Row } from 'antd';
+import { FC, useEffect, useState } from 'react';
+import { Col, Row } from 'antd';
 import { useHistory } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { RootState } from '../../store';
+import { userAuthThunk } from '../../store/userSlice';
 
 import { LoginForm } from '../../components';
-import { login } from '../../api/login';
 import { IUserLoginInput } from '../../api/types';
-import { setIsLoggedIn, setUserId } from '../../store/userSlice';
 
 interface LoginScreenProps {}
 
 const LoginScreen: FC<LoginScreenProps> = () => {
   const routeHistory = useHistory();
   const reduxDispatch = useDispatch();
+  const { userId } = useSelector((state: RootState) => state.user);
+  const [isSignedForm, setIsSignedForm] = useState(false);
+
+  useEffect(() => {
+    if (!userId) return;
+    routeHistory.push('/');
+  }, [routeHistory, userId]);
 
   const onSubmit = (data: IUserLoginInput) => {
-    const user = login(data);
+    reduxDispatch(userAuthThunk(data));
+  };
 
-    if (!user) {
-      message.error('Ошибка авторизации');
-      localStorage.removeItem('authToken');
-      reduxDispatch(setIsLoggedIn(false));
-      reduxDispatch(setUserId(''));
-      return;
-    }
-
-    localStorage.setItem('authToken', user.userId);
-    reduxDispatch(setIsLoggedIn(true));
-    reduxDispatch(setUserId(user.userId));
-    routeHistory.push('/');
+  const onSwitchChange = () => {
+    setIsSignedForm(!isSignedForm);
   };
 
   return (
@@ -46,8 +45,10 @@ const LoginScreen: FC<LoginScreenProps> = () => {
         style={{ maxWidth: 510 }}
       >
         <LoginForm
-          initialValues={{ username: '', password: '' }}
+          initialValues={{ userEmail: '', password: '', isSignedForm: false }}
           onSubmit={onSubmit}
+          onSwitchChange={onSwitchChange}
+          isSignedForm={isSignedForm}
         />
       </Col>
     </Row>

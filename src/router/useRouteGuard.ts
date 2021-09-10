@@ -6,9 +6,9 @@ import { RootState } from '../store';
 export const useRouteGuard = () => {
   const { pathname } = useLocation();
   const routeHistory = useHistory();
-  const { isLoggedIn } = useSelector((state: RootState) => state.user);
+  const { userId } = useSelector((state: RootState) => state.user);
 
-  if (!isLoggedIn && pathname !== '/login') {
+  if (!userId && pathname !== '/login') {
     routeHistory.push('/login');
   }
 

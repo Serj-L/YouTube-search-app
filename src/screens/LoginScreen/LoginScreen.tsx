@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { RootState } from '../../store';
-import { getUserIdThunk } from '../../store/userSlice';
+import { userAuthThunk } from '../../store/userSlice';
 
 import { LoginForm } from '../../components';
 import { IUserLoginInput } from '../../api/types';
@@ -23,7 +23,7 @@ const LoginScreen: FC<LoginScreenProps> = () => {
   }, [routeHistory, userId]);
 
   const onSubmit = (data: IUserLoginInput) => {
-    reduxDispatch(getUserIdThunk(data));
+    reduxDispatch(userAuthThunk(data));
   };
 
   const onSwitchChange = () => {

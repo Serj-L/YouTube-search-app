@@ -11,6 +11,15 @@ interface SearchResultsProps {}
 
 const numFormatter = new Intl.NumberFormat('ru');
 
+function declOfNum (number: number, words: string[]): string {
+  const x = Math.abs(number) % 100;
+  const y = x % 10;
+  if (x > 10 && x < 20) { return words[2]; }
+  if (y > 1 && y < 5) { return words[1]; }
+  if (y === 1) { return words[0]; }
+  return words[2];
+}
+
 const SearchResults: FC<SearchResultsProps> = () => {
   const search = useSelector((state: RootState) => state.youtubeSearch);
   const videoList = useSelector((state: RootState) => state.youtubeSearch.videos);
@@ -78,7 +87,6 @@ const SearchResults: FC<SearchResultsProps> = () => {
                       preview={false}
                       width={157}
                       height={88}
-                      fallback='../../img/NoPreview.svg'
                       src={item.thumbnail.url}
                       alt='Video preview'
                     />
@@ -115,7 +123,7 @@ const SearchResults: FC<SearchResultsProps> = () => {
                     {!item.viewCount ? 'Нет данных о количестве просмотров' :
                       Number(item.viewCount) / 1000 >= 1 ?
                         `${numFormatter.format(Math.round(Number(item.viewCount) / 1000))} тыс. просмотров` :
-                        `${item.viewCount} просмотров`}
+                        `${item.viewCount} ${declOfNum(Number(item.viewCount),['просмотр', 'просмотра', 'просмотров'])}`}
                   </Typography.Text> }
               />
             </List.Item>
@@ -146,7 +154,6 @@ const SearchResults: FC<SearchResultsProps> = () => {
                         preview={false}
                         width={245}
                         height={138}
-                        fallback='../../img/NoPreview.svg'
                         src={video.thumbnail.url}
                         alt='Video preview'
                       />
@@ -183,7 +190,7 @@ const SearchResults: FC<SearchResultsProps> = () => {
                           <br />
                           {Number(video.viewCount) / 1000 >= 1 ?
                             `${numFormatter.format(Math.round(Number(video.viewCount) / 1000))} тыс. просмотров` :
-                            `${video.viewCount} просмотров`}
+                            `${video.viewCount} ${declOfNum(Number(video.viewCount),['просмотр', 'просмотра', 'просмотров'])}`}
                         </Typography.Text>
                       </>
                     }

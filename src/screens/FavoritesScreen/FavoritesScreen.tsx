@@ -37,6 +37,7 @@ const openNotificationWithIcon = (type: 'success' | 'info' | 'warning' | 'error'
 const FavoritesScreen: FC<FavoritesScreenProps> = () => {
   const reduxDispatch = useDispatch();
   const routeHistory = useHistory();
+  const { isQueryInFavorites } = useSelector((state: RootState) => state.youtubeSearch);
   const { favorites, isLoading, isError } = useSelector((state: RootState) => state.favorites);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [activeItem, setActiveItem] = useState<IFavoritesInput>({
@@ -87,11 +88,13 @@ const FavoritesScreen: FC<FavoritesScreenProps> = () => {
   };
 
   const onEditFavoriteItem = (values: IFavoritesInput) => {
-    if (isInFavorites(values.query, activeItem.id, favorites)) {
+    const trimQuery = values.query.trim();
+
+    if (isInFavorites(trimQuery, activeItem.id, favorites)) {
       openNotificationWithIcon('warning', `Запрос «${values.query}» уже сохранен в «Избранном»`, 'Отредактируйте, пожалуйста, текст запроса, что бы сохранить изменения', 'topRight');
       return;
     }
-    reduxDispatch(editFavoriteItem({ ...values, id: activeItem.id }));
+    reduxDispatch(editFavoriteItem({ ...values, query: trimQuery, id: activeItem.id }));
     setIsModalVisible(false);
   };
 
@@ -106,7 +109,7 @@ const FavoritesScreen: FC<FavoritesScreenProps> = () => {
 
     routeHistory.push('/');
     reduxDispatch(setCurrentRoute('/'));
-    reduxDispatch(setIsQueryInFavorites({ value: true }));
+    if (!isQueryInFavorites) reduxDispatch(setIsQueryInFavorites({ value: true }));
   };
 
   return isLoading
@@ -159,14 +162,14 @@ const FavoritesScreen: FC<FavoritesScreenProps> = () => {
                           setIsModalVisible(true);
                         }}
                       >
-                      Изменить
+                        Изменить
                       </a>,
                       <a
                         className={styles.deleteLink}
                         key="list-loadmore-more"
                         onClick={() => showConfirm(item.query, item.id)}
                       >
-                      Удалить
+                        Удалить
                       </a>,
                     ]}
                   >
@@ -200,7 +203,7 @@ const FavoritesScreen: FC<FavoritesScreenProps> = () => {
               padding: '15px 0 35px',
             }}
           >
-          Изменить запрос
+            Изменить запрос
           </h3>
           <FavoritesForm
             initialValues={{

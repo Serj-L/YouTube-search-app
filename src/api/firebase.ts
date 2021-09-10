@@ -1,13 +1,15 @@
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, setPersistence, browserLocalPersistence } from 'firebase/auth';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 
 import { IUserLoginInput, IFirebaseLoginResponse, IFavoritesFirebase } from './types';
 
-import { dataBase } from '../firebase';
+import { dataBase } from '../firebaseInit';
 
-export const getUserId = async (data: IUserLoginInput): Promise<IFirebaseLoginResponse> => {
-  const auth = getAuth();
+const auth = getAuth();
 
+setPersistence(auth, browserLocalPersistence);
+
+export const userAuth = async (data: IUserLoginInput): Promise<IFirebaseLoginResponse> => {
   const { user } = data.isSignedForm ?
     await createUserWithEmailAndPassword(auth, data.userEmail, data.password) :
     await signInWithEmailAndPassword(auth, data.userEmail, data.password);

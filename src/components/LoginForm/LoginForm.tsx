@@ -44,7 +44,7 @@ const LoginForm: FC<LoginFormProps> = ({
   return (
     <div className={styles.wrapper}>
       <LogoIcon />
-      <h3 className={styles.title}>Вход</h3>
+      <h3 className={styles.title}>{isSignedForm ? 'Регистрация и вход' : 'Вход'}</h3>
       <Form
         className={styles.form}
         name="basic"

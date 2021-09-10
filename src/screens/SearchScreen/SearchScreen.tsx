@@ -19,7 +19,7 @@ import styles from './SearchScreen.module.css';
 interface SearchScreenProps {}
 
 const isInFavorites = (searchQuery: string, favorites: IFavoritesInput[] ): boolean => {
-  return favorites.filter(el => el.query === searchQuery).length ? true : false;
+  return favorites.filter(el => el.query.trim() === searchQuery.trim()).length ? true : false;
 };
 
 const openNotificationWithIcon = (type: 'success' | 'info' | 'warning' | 'error',
@@ -42,7 +42,10 @@ const SearchScreen: FC<SearchScreenProps> = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect (() => {
-    reduxDispatch(setIsQueryInFavorites({ value: isInFavorites(search.query, favorites) }));
+    const checkIsQueryInFavorite = isInFavorites(search.query, favorites);
+
+    if (checkIsQueryInFavorite === search.isQueryInFavorites) return;
+    reduxDispatch(setIsQueryInFavorites({ value: checkIsQueryInFavorite }));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -66,9 +69,11 @@ const SearchScreen: FC<SearchScreenProps> = () => {
       return;
     }
 
-    reduxDispatch(setQuery({ query: searchQuery }));
-    reduxDispatch(searchVideos({ q: searchQuery }));
-    reduxDispatch(setIsQueryInFavorites({ value: isInFavorites(searchQuery, favorites) }));
+    reduxDispatch(setQuery({ query: searchQuery.trim() }));
+    reduxDispatch(searchVideos({ q: searchQuery.trim() }));
+
+    const checkIsQueryInFavorite = isInFavorites(searchQuery, favorites);
+    if (checkIsQueryInFavorite !== search.isQueryInFavorites) reduxDispatch(setIsQueryInFavorites({ value: checkIsQueryInFavorite }));
   };
 
   const saveToFavorites = (values: IFavoritesInput) => {
@@ -172,7 +177,8 @@ const SearchScreen: FC<SearchScreenProps> = () => {
                   value={searchQuery}
                   onChange={(e) => {
                     setSearchQuery(e.target.value);
-                    reduxDispatch(setIsQueryInFavorites({ value: isInFavorites(e.target.value, favorites) }));
+                    const checkIsQueryInFavorite = isInFavorites(e.target.value, favorites);
+                    if (checkIsQueryInFavorite !== search.isQueryInFavorites) reduxDispatch(setIsQueryInFavorites({ value: checkIsQueryInFavorite }));
                   }}
                 />
               </div>
@@ -244,7 +250,7 @@ const SearchScreen: FC<SearchScreenProps> = () => {
           initialValues={{
             id: '',
             title: '',
-            query: searchQuery,
+            query: searchQuery.trim(),
             order: 'relevance',
             resultsPerPage: 1,
           }}

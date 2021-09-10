@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { message } from 'antd';
 
-import { getUserId } from '../api/firebase';
+import { userAuth } from '../api/firebase';
 import { IUserLoginInput, IFirebaseLoginResponse } from '../api/types';
 
 interface IUserState {
@@ -12,11 +12,11 @@ const initialState = {
   userId: localStorage.getItem('authToken') || '',
 } as IUserState;
 
-export const getUserIdThunk = createAsyncThunk(
-  'user/getUserIdThunk',
+export const userAuthThunk = createAsyncThunk(
+  'user/userAuthThunk',
   async (data: IUserLoginInput, { rejectWithValue }) => {
     try {
-      const response = await getUserId(data);
+      const response = await userAuth(data);
 
       return response;
     } catch(err: any) {
@@ -34,13 +34,13 @@ const userSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(getUserIdThunk.fulfilled, (state, action) => {
+    builder.addCase(userAuthThunk.fulfilled, (state, action) => {
       const payload = action.payload as IFirebaseLoginResponse;
 
       state.userId = payload.uid;
       localStorage.setItem('authToken', payload.uid);
     });
-    builder.addCase(getUserIdThunk.rejected, (state, action) => {
+    builder.addCase(userAuthThunk.rejected, (state, action) => {
       state.userId = '';
       message.error(`Ошибка: ${action.payload}`);
     });

@@ -117,6 +117,7 @@ const youtubeSearchSlice = createSlice({
       state.isLoading = false;
       state.queryStatus = 'fulfilled';
       state.errorMessage = '';
+      state.statsQueryStatus = 'getStats';
     });
     builder.addCase(searchVideos.rejected, (state, action) => {
       state.isLoading = false;

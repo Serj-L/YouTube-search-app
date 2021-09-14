@@ -58,9 +58,9 @@ const SearchScreen: FC<SearchScreenProps> = () => {
   }, [search.query]);
 
   useEffect (() => {
-    if (search.queryStatus !== 'fulfilled') return;
+    if (search.statsQueryStatus !== 'getStats') return;
     reduxDispatch(searchVideosStats(search.videoIdList));
-  }, [reduxDispatch, search.queryStatus, search.videoIdList]);
+  }, [reduxDispatch, search.statsQueryStatus, search.videoIdList]);
 
   const makeSearch = () => {
     if (!searchQuery) {

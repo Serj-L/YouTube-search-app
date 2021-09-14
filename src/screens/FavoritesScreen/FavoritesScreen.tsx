@@ -150,7 +150,10 @@ const FavoritesScreen: FC<FavoritesScreenProps> = () => {
                 renderItem={item => (
                   <List.Item
                     key={item.id}
-                    style={{ flexWrap: 'nowrap' }}
+                    style={{
+                      flexWrap: 'nowrap',
+                      fontSize: 16,
+                    }}
                     actions={[
                       <a
                         className={styles.editLink}

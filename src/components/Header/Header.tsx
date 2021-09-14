@@ -1,14 +1,12 @@
-import { FC, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { FC } from 'react';
+import { useDispatch } from 'react-redux';
 import { NavLink, useLocation } from 'react-router-dom';
 import { getAuth, signOut } from 'firebase/auth';
 import { Menu, Row, Col } from 'antd';
 
-import { RootState } from '../../store';
 import { setUserId } from '../../store/userSlice';
 import { logOut } from '../../store/youtubeSearchSlice';
 import { setFavoritesToInitialState } from '../../store/favoritesSlice';
-import { setCurrentRoute } from '../../store/routeSlice';
 
 import { LogoIcon } from '../Logo';
 
@@ -18,13 +16,7 @@ interface HeaderProps {}
 
 const Header: FC<HeaderProps> = () => {
   const reduxDispatch = useDispatch();
-  const { currentRoute } = useSelector((state: RootState) => state.route);
   const { pathname } = useLocation();
-
-  useEffect(() => {
-    if (pathname === currentRoute) return;
-    reduxDispatch(setCurrentRoute(pathname));
-  }, [pathname, currentRoute, reduxDispatch]);
 
   return (
     <Row
@@ -42,14 +34,13 @@ const Header: FC<HeaderProps> = () => {
       <Col flex='auto'>
         <Menu
           mode='horizontal'
-          selectedKeys={[currentRoute]}
+          selectedKeys={[pathname]}
           style={{ borderColor: 'transparent' }}
         >
           <Menu.Item key='/'>
             <NavLink
               to={'/'}
               className={styles.navlink}
-              onClick={() => reduxDispatch(setCurrentRoute('/'))}
             >
               Поиск
             </NavLink>
@@ -58,7 +49,6 @@ const Header: FC<HeaderProps> = () => {
             <NavLink
               to={'/favorites'}
               className={styles.navlink}
-              onClick={() => reduxDispatch(setCurrentRoute('/favorites'))}
             >
               Избранное
             </NavLink>

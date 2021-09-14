@@ -8,7 +8,6 @@ import { v4 as uuidV4 } from 'uuid';
 import { RootState } from '../../store';
 import { searchVideos, searchVideosStats, setQuery, setIsQueryInFavorites } from '../../store/youtubeSearchSlice';
 import { setFavorites } from '../../store/favoritesSlice';
-import { setCurrentRoute } from '../../store/routeSlice';
 
 import { IFavoritesInput } from '../../api/types';
 
@@ -85,8 +84,8 @@ const SearchScreen: FC<SearchScreenProps> = () => {
   return (
     <>
       <Row
-        justify="center"
-        align="middle"
+        justify='center'
+        align={search.queryStatus !== 'fulfilled' && !search.videos.length ? 'middle' : 'top'}
         style={{ minHeight: '80vh' }}
       >
         <Col
@@ -132,7 +131,6 @@ const SearchScreen: FC<SearchScreenProps> = () => {
                       <NavLink
                         style={{ marginTop: 15 }}
                         to={'/favorites'}
-                        onClick={() => reduxDispatch(setCurrentRoute('/favorites'))}
                       >
                         Перейти в «Избранное»
                       </NavLink>
@@ -147,10 +145,7 @@ const SearchScreen: FC<SearchScreenProps> = () => {
                         color: '#1890FF',
                         visibility: search.videos.length ? 'visible' : 'hidden',
                       }}
-                      onClick={() => {
-                        routeHistory.push('/favorites');
-                        reduxDispatch(setCurrentRoute('/favorites'));
-                      }}
+                      onClick={() => routeHistory.push('/favorites')}
                     /> :
                     <HeartOutlined
                       className={styles.icon}

@@ -36,7 +36,7 @@ const FavoritesForm: FC<FavoritesFormProps> = ({
   initialValues,
   editMode = false,
 }) => {
-  const [sliderInputValue, setSliderInputValue] = useState(12);
+  const [sliderInputValue, setSliderInputValue] = useState(1);
   const [form] = Form.useForm();
   const buttonTexts = useMemo(() => {
     return editMode ? { cancelBtn: 'Не изменять', okBtn: 'Изменить' } : { cancelBtn: 'Не сохранять', okBtn: 'Сохранить' };
@@ -44,7 +44,6 @@ const FavoritesForm: FC<FavoritesFormProps> = ({
 
   useEffect(() => {
     form.resetFields();
-    setSliderInputValue(12);
   }, [form, initialValues]);
 
   return (

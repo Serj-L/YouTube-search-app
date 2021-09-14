@@ -7,7 +7,6 @@ import { ExclamationCircleOutlined, LoadingOutlined } from '@ant-design/icons';
 import { RootState } from '../../store';
 import { editFavoriteItem, deleteFavoriteItem } from '../../store/favoritesSlice';
 import { searchVideos, setQuery, setIsQueryInFavorites } from '../../store/youtubeSearchSlice';
-import { setCurrentRoute } from '../../store/routeSlice';
 
 import { IFavoritesInput } from '../../api/types';
 
@@ -45,7 +44,7 @@ const FavoritesScreen: FC<FavoritesScreenProps> = () => {
     title: '',
     query: '',
     order: 'relevance',
-    resultsPerPage: 12,
+    resultsPerPage: 1,
   });
 
   const showConfirm = (title: string, id: string) => {
@@ -108,7 +107,6 @@ const FavoritesScreen: FC<FavoritesScreenProps> = () => {
       maxResults: searchInput.resultsPerPage }));
 
     routeHistory.push('/');
-    reduxDispatch(setCurrentRoute('/'));
     if (!isQueryInFavorites) reduxDispatch(setIsQueryInFavorites({ value: true }));
   };
 

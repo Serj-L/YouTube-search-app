@@ -87,13 +87,13 @@ const FavoritesScreen: FC<FavoritesScreenProps> = () => {
   };
 
   const onEditFavoriteItem = (values: IFavoritesInput) => {
-    const trimQuery = values.query.trim();
+    const lowerCaseTrimQuery = values.query.toLowerCase().trim();
 
-    if (isInFavorites(trimQuery, activeItem.id, favorites)) {
-      openNotificationWithIcon('warning', `Запрос «${values.query}» уже сохранен в «Избранном»`, 'Отредактируйте, пожалуйста, текст запроса, что бы сохранить изменения', 'topRight');
+    if (isInFavorites(lowerCaseTrimQuery, activeItem.id, favorites)) {
+      openNotificationWithIcon('warning', `Запрос «${lowerCaseTrimQuery}» уже сохранен в «Избранном»`, 'Отредактируйте, пожалуйста, текст запроса, что бы сохранить изменения', 'topRight');
       return;
     }
-    reduxDispatch(editFavoriteItem({ ...values, query: trimQuery, id: activeItem.id }));
+    reduxDispatch(editFavoriteItem({ ...values, query: lowerCaseTrimQuery, id: activeItem.id }));
     setIsModalVisible(false);
   };
 

@@ -5,7 +5,7 @@ import { IUserLoginInput, IFirebaseLoginResponse, IFavoritesFirebase } from './t
 
 import { dataBase } from '../firebaseInit';
 
-const auth = getAuth();
+export const auth = getAuth();
 
 setPersistence(auth, browserLocalPersistence);
 

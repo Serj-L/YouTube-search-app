@@ -2,11 +2,13 @@ import { FC } from 'react';
 import { useDispatch } from 'react-redux';
 import { NavLink, useLocation } from 'react-router-dom';
 import { getAuth, signOut } from 'firebase/auth';
-import { Menu, Row, Col } from 'antd';
+import { Menu, Row, Col, Avatar, Tooltip, Typography } from 'antd';
 
 import { setUserId } from '../../store/userSlice';
 import { logOut } from '../../store/youtubeSearchSlice';
 import { setFavoritesToInitialState } from '../../store/favoritesSlice';
+
+import { auth } from '../../api/firebase';
 
 import { LogoIcon } from '../Logo';
 
@@ -17,6 +19,7 @@ interface HeaderProps {}
 const Header: FC<HeaderProps> = () => {
   const reduxDispatch = useDispatch();
   const { pathname } = useLocation();
+  const user = auth.currentUser;
 
   return (
     <Row
@@ -56,26 +59,53 @@ const Header: FC<HeaderProps> = () => {
         </Menu>
       </Col>
       <Col flex='none'>
-        <Menu
-          mode='horizontal'
-          style={{ borderColor: 'transparent' }}
+        <Tooltip
+          placement='bottomRight'
+          color='#ffffff'
+          title={
+            <>
+              <Typography.Text
+                strong
+                style={{
+                  display: 'block',
+                  marginBottom: 5,
+                }}
+              >
+                {user?.email ? `Пользователь: ${user.email}` : ''}
+              </Typography.Text>
+              <NavLink
+                className={styles.navlink}
+                style={{
+                  display: 'block',
+                  textAlign: 'center',
+                }}
+                to={'/login'}
+                onClick={() => {
+                  signOut(getAuth());
+                  localStorage.removeItem('authToken');
+                  reduxDispatch(setUserId(''));
+                  reduxDispatch(logOut());
+                  reduxDispatch(setFavoritesToInitialState());
+                }}
+              >
+                Выйти
+              </NavLink>
+            </>
+          }
         >
-          <Menu.Item key='logout'>
-            <NavLink
-              className={styles.navlink}
-              to={'/login'}
-              onClick={() => {
-                signOut(getAuth());
-                localStorage.removeItem('authToken');
-                reduxDispatch(setUserId(''));
-                reduxDispatch(logOut());
-                reduxDispatch(setFavoritesToInitialState());
-              }}
-            >
-              Выйти
-            </NavLink>
-          </Menu.Item>
-        </Menu>
+          <Avatar
+            shape="square"
+            style={{
+              fontFamily: 'Roboto, sans-serif',
+              fontSize: 16,
+              color: '#ffffff',
+              backgroundColor: '#1890ff',
+              cursor: 'pointer',
+            }}
+          >
+            {user?.email?.charAt(0).toUpperCase() || 'П'}
+          </Avatar>
+        </Tooltip>
       </Col>
     </Row>
   );

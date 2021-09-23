@@ -18,7 +18,7 @@ import styles from './SearchScreen.module.css';
 interface SearchScreenProps {}
 
 const isInFavorites = (searchQuery: string, favorites: IFavoritesInput[] ): boolean => {
-  return favorites.filter(el => el.query.trim() === searchQuery.trim()).length ? true : false;
+  return favorites.filter(el => el.query === searchQuery.toLowerCase().trim()).length ? true : false;
 };
 
 const openNotificationWithIcon = (type: 'success' | 'info' | 'warning' | 'error',
@@ -68,8 +68,8 @@ const SearchScreen: FC<SearchScreenProps> = () => {
       return;
     }
 
-    reduxDispatch(setQuery({ query: searchQuery.trim() }));
-    reduxDispatch(searchVideos({ q: searchQuery.trim() }));
+    reduxDispatch(setQuery({ query: searchQuery.toLowerCase().trim() }));
+    reduxDispatch(searchVideos({ q: searchQuery.toLowerCase().trim() }));
 
     const checkIsQueryInFavorite = isInFavorites(searchQuery, favorites);
     if (checkIsQueryInFavorite !== search.isQueryInFavorites) reduxDispatch(setIsQueryInFavorites({ value: checkIsQueryInFavorite }));
@@ -245,7 +245,7 @@ const SearchScreen: FC<SearchScreenProps> = () => {
           initialValues={{
             id: '',
             title: '',
-            query: searchQuery.trim(),
+            query: searchQuery.toLowerCase().trim(),
             order: 'relevance',
             resultsPerPage: 1,
           }}

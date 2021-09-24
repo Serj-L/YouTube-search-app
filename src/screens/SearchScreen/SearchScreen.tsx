@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { NavLink, useHistory } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { Input, Form, Button, Row, Col, Modal, Tooltip, Typography, notification, Spin, Empty } from 'antd';
 import { HeartOutlined, HeartFilled, LoadingOutlined } from '@ant-design/icons';
 import { v4 as uuidV4 } from 'uuid';
@@ -8,10 +8,12 @@ import { v4 as uuidV4 } from 'uuid';
 import { RootState } from '../../store';
 import { searchVideos, searchVideosStats, setQuery, setIsQueryInFavorites } from '../../store/youtubeSearchSlice';
 import { setFavorites } from '../../store/favoritesSlice';
+import { setSearchScreenYOffset } from '../../store/screenParamsSlice';
 
 import { IFavoritesInput } from '../../api/types';
 
 import { SearchResults, FavoritesForm } from '../../components/index';
+import { debounce } from '../../components/utils/utils';
 
 import styles from './SearchScreen.module.css';
 
@@ -36,9 +38,31 @@ const SearchScreen: FC<SearchScreenProps> = () => {
   const reduxDispatch = useDispatch();
   const search = useSelector((state: RootState) => state.youtubeSearch);
   const { favorites } = useSelector((state: RootState) => state.favorites);
-  const routeHistory = useHistory();
+  const { isMobile, searchScreenYOffset } = useSelector((state: RootState) => state.screenParams);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+
+  useEffect (() => {
+    if (search.queryStatus !== 'fulfilled' || !isMobile) return;
+
+    window.scrollTo(0, searchScreenYOffset);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect (() => {
+    if (!isMobile) return;
+
+    const setCurrentPageYOffset = () => {
+      reduxDispatch(setSearchScreenYOffset(window.pageYOffset));
+    };
+    const handleWindowScroll = debounce(setCurrentPageYOffset, 250);
+
+    window.addEventListener('scroll', handleWindowScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleWindowScroll);
+    };
+  }, [isMobile, reduxDispatch]);
 
   useEffect (() => {
     const checkIsQueryInFavorite = isInFavorites(search.query, favorites);
@@ -117,6 +141,7 @@ const SearchScreen: FC<SearchScreenProps> = () => {
                   className={styles.toolTipWrapper}
                   placement='bottom'
                   color='#ffffff'
+                  trigger={['click', 'hover']}
                   title={
                     <>
                       <Typography.Text
@@ -126,10 +151,10 @@ const SearchScreen: FC<SearchScreenProps> = () => {
                           marginBottom: 15,
                         }}
                       >
-                        Поиск сохранён в разделе «Избранное»
+                        Запрос уже сохранён в разделе «Избранное»
                       </Typography.Text>
                       <NavLink
-                        style={{ marginTop: 15 }}
+                        style={{ marginTop: 15, fontWeight: 600 }}
                         to={'/favorites'}
                       >
                         Перейти в «Избранное»
@@ -145,7 +170,6 @@ const SearchScreen: FC<SearchScreenProps> = () => {
                         color: '#1890FF',
                         visibility: search.videos.length ? 'visible' : 'hidden',
                       }}
-                      onClick={() => routeHistory.push('/favorites')}
                     /> :
                     <HeartOutlined
                       className={styles.icon}
@@ -209,7 +233,6 @@ const SearchScreen: FC<SearchScreenProps> = () => {
               </Button>
             </Form.Item>
           </Form>
-
           {(search.queryStatus === 'fulfilled' || search.queryStatus === 'rejected') && !search.videos.length ?
             <Row
               justify="center"

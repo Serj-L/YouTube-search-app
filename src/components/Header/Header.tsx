@@ -62,6 +62,7 @@ const Header: FC<HeaderProps> = () => {
         <Tooltip
           placement='bottomRight'
           color='#ffffff'
+          trigger={['click', 'hover']}
           title={
             <>
               <Typography.Text

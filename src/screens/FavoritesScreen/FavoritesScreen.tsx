@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { List, Typography, Row, Col, Modal, notification, Empty, Spin } from 'antd';
@@ -7,10 +7,12 @@ import { ExclamationCircleOutlined, LoadingOutlined } from '@ant-design/icons';
 import { RootState } from '../../store';
 import { editFavoriteItem, deleteFavoriteItem } from '../../store/favoritesSlice';
 import { searchVideos, setQuery, setIsQueryInFavorites } from '../../store/youtubeSearchSlice';
+import { setFavoriteScreenYOffset } from '../../store/screenParamsSlice';
 
 import { IFavoritesInput } from '../../api/types';
 
 import { FavoritesForm } from '../../components/index';
+import { debounce } from '../../components/utils/utils';
 
 import styles from './FavoritesScreen.module.css';
 
@@ -38,6 +40,7 @@ const FavoritesScreen: FC<FavoritesScreenProps> = () => {
   const routeHistory = useHistory();
   const { isQueryInFavorites } = useSelector((state: RootState) => state.youtubeSearch);
   const { favorites, isLoading, isError } = useSelector((state: RootState) => state.favorites);
+  const { isMobile, favoriteScreenYOffset } = useSelector((state: RootState) => state.screenParams);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [activeItem, setActiveItem] = useState<IFavoritesInput>({
     id: '',
@@ -46,6 +49,28 @@ const FavoritesScreen: FC<FavoritesScreenProps> = () => {
     order: 'relevance',
     resultsPerPage: 1,
   });
+
+  useEffect (() => {
+    if (!isMobile) return;
+
+    window.scrollTo(0, favoriteScreenYOffset);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect (() => {
+    if (!isMobile) return;
+
+    const setCurrentPageYOffset = () => {
+      reduxDispatch(setFavoriteScreenYOffset(window.pageYOffset));
+    };
+    const handleWindowScroll = debounce(setCurrentPageYOffset, 250);
+
+    window.addEventListener('scroll', handleWindowScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleWindowScroll);
+    };
+  }, [isMobile, reduxDispatch]);
 
   const showConfirm = (title: string, id: string) => {
     confirm({

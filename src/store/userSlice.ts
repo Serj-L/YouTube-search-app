@@ -6,12 +6,10 @@ import { IUserLoginInput, IFirebaseLoginResponse } from '../api/types';
 
 interface IUserState {
   userId: string;
-  isMobile: boolean;
 }
 
 const initialState = {
   userId: localStorage.getItem('authToken') || '',
-  isMobile: false,
 } as IUserState;
 
 export const userAuthThunk = createAsyncThunk(
@@ -34,9 +32,6 @@ const userSlice = createSlice({
     setUserId(state, action: PayloadAction<string>) {
       state.userId = action.payload;
     },
-    setIsMobile(state, action: PayloadAction<boolean>) {
-      state.isMobile = action.payload;
-    },
   },
   extraReducers: (builder) => {
     builder.addCase(userAuthThunk.fulfilled, (state, action) => {
@@ -52,5 +47,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { setUserId, setIsMobile } = userSlice.actions;
+export const { setUserId } = userSlice.actions;
 export default userSlice.reducer;

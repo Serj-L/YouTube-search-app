@@ -16,7 +16,7 @@ const App: FC<AppProps> = () => {
   const { userId } = useSelector((state: RootState) => state.user);
   const { favorites, updateDb } = useSelector((state: RootState) => state.favorites);
   const { isMobile } = useSelector((state: RootState) => state.screenParams);
-  const [screenWidth, setScreenWidth] = useState<Number>(window.innerWidth);
+  const [screenWidth, setScreenWidth] = useState<number>(window.innerWidth);
 
   useEffect(() => {
     const handleWindowResize = () => {

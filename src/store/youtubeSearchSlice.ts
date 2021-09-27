@@ -41,11 +41,16 @@ export interface IVideoItem {
   }
   viewCount?: string;
 }
+interface ISearchQueryParams {
+  resultsPerPage: number;
+  order: string;
+}
 interface IYoutubeSearchState {
   videos: IVideoItem[];
   totalCount: number;
   isLoading: boolean;
   query: string;
+  queryParams: ISearchQueryParams,
   queryStatus: string;
   errorMessage: string;
   videoIdList: string;
@@ -58,6 +63,7 @@ const initialState = {
   totalCount: 0,
   isLoading: false,
   query: '',
+  queryParams: { resultsPerPage: 12, order: 'relevance' },
   queryStatus: '',
   errorMessage: '',
   videoIdList: '',
@@ -71,6 +77,10 @@ const youtubeSearchSlice = createSlice({
   reducers: {
     setQuery(state, action: PayloadAction<{ query: string }>) {
       state.query = action.payload.query;
+    },
+    setQueryParams(state, action: PayloadAction<ISearchQueryParams>) {
+      state.queryParams.resultsPerPage = action.payload.resultsPerPage;
+      state.queryParams.order = action.payload.order;
     },
     setIsQueryInFavorites(state, action: PayloadAction<{ value: boolean }>) {
       state.isQueryInFavorites = action.payload.value;
@@ -141,5 +151,10 @@ const youtubeSearchSlice = createSlice({
   },
 });
 
-export const { setQuery, logOut, setIsQueryInFavorites } = youtubeSearchSlice.actions;
+export const {
+  setQuery,
+  logOut,
+  setIsQueryInFavorites,
+  setQueryParams,
+} = youtubeSearchSlice.actions;
 export default youtubeSearchSlice.reducer;

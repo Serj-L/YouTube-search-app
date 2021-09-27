@@ -6,7 +6,7 @@ import { ExclamationCircleOutlined, LoadingOutlined } from '@ant-design/icons';
 
 import { RootState } from '../../store';
 import { editFavoriteItem, deleteFavoriteItem } from '../../store/favoritesSlice';
-import { searchVideos, setQuery, setIsQueryInFavorites } from '../../store/youtubeSearchSlice';
+import { searchVideos, setQuery, setIsQueryInFavorites, setQueryParams } from '../../store/youtubeSearchSlice';
 import { setFavoriteScreenYOffset } from '../../store/screenParamsSlice';
 
 import { IFavoritesInput } from '../../api/types';
@@ -37,7 +37,7 @@ const openNotificationWithIcon = (type: 'success' | 'info' | 'warning' | 'error'
 const FavoritesScreen: FC<FavoritesScreenProps> = () => {
   const reduxDispatch = useDispatch();
   const routeHistory = useHistory();
-  const { isQueryInFavorites } = useSelector((state: RootState) => state.youtubeSearch);
+  const { isQueryInFavorites, query, queryParams } = useSelector((state: RootState) => state.youtubeSearch);
   const { favorites, isLoading, isError } = useSelector((state: RootState) => state.favorites);
   const { isMobile, favoriteScreenYOffset } = useSelector((state: RootState) => state.screenParams);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -118,7 +118,15 @@ const FavoritesScreen: FC<FavoritesScreenProps> = () => {
 
   const makeSearch = (id: string) => {
     const searchInput = favorites.filter(el => el.id === id)[0];
+    if (searchInput.query === query && searchInput.resultsPerPage === queryParams.resultsPerPage && searchInput.order === queryParams.order) {
+      routeHistory.push('/');
+      return;
+    }
+
     reduxDispatch(setQuery({ query: searchInput.query }));
+    reduxDispatch(setQueryParams({
+      resultsPerPage: searchInput.resultsPerPage,
+      order: searchInput.order ? searchInput.order : 'relevance' }));
     reduxDispatch(searchVideos({
       q: searchInput.query,
       order: searchInput.order ? searchInput.order : 'relevance',

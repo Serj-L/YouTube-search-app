@@ -6,7 +6,7 @@ import { HeartOutlined, HeartFilled, LoadingOutlined } from '@ant-design/icons';
 import { v4 as uuidV4 } from 'uuid';
 
 import { RootState } from '../../store';
-import { searchVideos, searchVideosStats, setQuery, setIsQueryInFavorites } from '../../store/youtubeSearchSlice';
+import { searchVideos, searchVideosStats, setQuery, setIsQueryInFavorites, setQueryParams } from '../../store/youtubeSearchSlice';
 import { setFavorites } from '../../store/favoritesSlice';
 import { setSearchScreenYOffset } from '../../store/screenParamsSlice';
 
@@ -85,9 +85,18 @@ const SearchScreen: FC<SearchScreenProps> = () => {
       openNotificationWithIcon('warning', 'Поиск не может быть осуществлен.', 'Введите, пожалуйста, поисковый запрос.', 'topRight');
       return;
     }
+    if (searchQuery.toLowerCase().trim() === search.query) {
+      openNotificationWithIcon('warning', 'Поиск по данному запросу уже осуществлен.', 'Введите, пожалуйста, новый поисковый запрос.', 'topRight');
+      return;
+    }
 
     reduxDispatch(setQuery({ query: searchQuery.toLowerCase().trim() }));
     reduxDispatch(searchVideos({ q: searchQuery.toLowerCase().trim() }));
+    if (search.queryParams.resultsPerPage !== 12 || search.queryParams.order !== 'relevance') {
+      reduxDispatch(setQueryParams({
+        resultsPerPage: 12,
+        order: 'relevance' }));
+    }
 
     const checkIsQueryInFavorite = isInFavorites(searchQuery, favorites);
     if (checkIsQueryInFavorite !== search.isQueryInFavorites) reduxDispatch(setIsQueryInFavorites({ value: checkIsQueryInFavorite }));

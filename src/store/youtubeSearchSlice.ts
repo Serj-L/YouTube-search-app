@@ -28,7 +28,7 @@ export const searchVideosStats = createAsyncThunk(
     }
   },
 );
-interface IVideoItem {
+export interface IVideoItem {
   videoId: string;
   title: string;
   description: string;
@@ -39,7 +39,6 @@ interface IVideoItem {
     height: number;
     url: string;
   }
-
   viewCount?: string;
 }
 interface IYoutubeSearchState {

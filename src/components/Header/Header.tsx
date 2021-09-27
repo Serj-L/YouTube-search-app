@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useLocation } from 'react-router-dom';
 import { getAuth, signOut } from 'firebase/auth';
 import { Menu, Row, Col, Avatar, Tooltip, Typography } from 'antd';
@@ -10,6 +10,8 @@ import { setFavoritesToInitialState } from '../../store/favoritesSlice';
 
 import { auth } from '../../api/firebase';
 
+import { RootState } from '../../store';
+
 import { LogoIcon } from '../Logo';
 
 import styles from './Header.module.css';
@@ -18,6 +20,7 @@ interface HeaderProps {}
 
 const Header: FC<HeaderProps> = () => {
   const reduxDispatch = useDispatch();
+  const { isMobile } = useSelector((state: RootState) => state.screenParams);
   const { pathname } = useLocation();
   const user = auth.currentUser;
 
@@ -62,7 +65,7 @@ const Header: FC<HeaderProps> = () => {
         <Tooltip
           placement='bottomRight'
           color='#ffffff'
-          trigger={['click', 'hover']}
+          trigger={isMobile ? ['click'] : ['hover']}
           title={
             <>
               <Typography.Text

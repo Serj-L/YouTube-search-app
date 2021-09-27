@@ -1,0 +1,15 @@
+.videoLink,
+.channelLink,
+.viewsCount {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.videoLink {
+  font-weight: 500;
+}
+
+.channelLink {
+  font-weight: 400;
+}

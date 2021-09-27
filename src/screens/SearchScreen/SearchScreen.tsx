@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useLayoutEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { Input, Form, Button, Row, Col, Modal, Tooltip, Typography, notification, Spin, Empty } from 'antd';
@@ -12,8 +12,7 @@ import { setSearchScreenYOffset } from '../../store/screenParamsSlice';
 
 import { IFavoritesInput } from '../../api/types';
 
-import { SearchResults, FavoritesForm } from '../../components/index';
-import { debounce } from '../../components/utils/utils';
+import { SearchResults, FavoritesForm } from '../../components';
 
 import styles from './SearchScreen.module.css';
 
@@ -46,22 +45,17 @@ const SearchScreen: FC<SearchScreenProps> = () => {
     if (search.queryStatus !== 'fulfilled' || !isMobile) return;
 
     window.scrollTo(0, searchScreenYOffset);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [window.pageYOffset]);
 
-  useEffect (() => {
+  useLayoutEffect (() => {
     if (!isMobile) return;
 
-    const setCurrentPageYOffset = () => {
+    return () => {
+      if (searchScreenYOffset === window.pageYOffset) return;
       reduxDispatch(setSearchScreenYOffset(window.pageYOffset));
     };
-    const handleWindowScroll = debounce(setCurrentPageYOffset, 250);
-
-    window.addEventListener('scroll', handleWindowScroll);
-
-    return () => {
-      window.removeEventListener('scroll', handleWindowScroll);
-    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMobile, reduxDispatch]);
 
   useEffect (() => {
@@ -69,7 +63,7 @@ const SearchScreen: FC<SearchScreenProps> = () => {
 
     if (checkIsQueryInFavorite === search.isQueryInFavorites) return;
     reduxDispatch(setIsQueryInFavorites({ value: checkIsQueryInFavorite }));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect (() => {
@@ -111,6 +105,7 @@ const SearchScreen: FC<SearchScreenProps> = () => {
         justify='center'
         align={search.queryStatus !== 'fulfilled' && !search.videos.length ? 'middle' : 'top'}
         style={{ minHeight: '80vh' }}
+
       >
         <Col
           xs={{ span: 23 }}
@@ -141,7 +136,7 @@ const SearchScreen: FC<SearchScreenProps> = () => {
                   className={styles.toolTipWrapper}
                   placement='bottom'
                   color='#ffffff'
-                  trigger={['click', 'hover']}
+                  trigger={isMobile ? ['click'] : ['hover']}
                   title={
                     <>
                       <Typography.Text
@@ -233,7 +228,8 @@ const SearchScreen: FC<SearchScreenProps> = () => {
               </Button>
             </Form.Item>
           </Form>
-          {(search.queryStatus === 'fulfilled' || search.queryStatus === 'rejected') && !search.videos.length ?
+          {(search.queryStatus === 'fulfilled' || search.queryStatus === 'rejected') && !search.videos.length
+            ?
             <Row
               justify="center"
               style={{ marginTop: 30 }}
@@ -241,7 +237,8 @@ const SearchScreen: FC<SearchScreenProps> = () => {
               <Col flex='auto'>
                 <Empty description={search.queryStatus === 'fulfilled' ? 'По Вашему запросу видео не найдены.' : 'Ошибка загрузки данных.'}/>
               </Col>
-            </Row> :
+            </Row>
+            :
             <SearchResults />
           }
         </Col>

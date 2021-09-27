@@ -1,4 +1,4 @@
-import { FC, useState, useEffect } from 'react';
+import { FC, useState, useEffect, useLayoutEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { List, Typography, Row, Col, Modal, notification, Empty, Spin } from 'antd';
@@ -11,8 +11,7 @@ import { setFavoriteScreenYOffset } from '../../store/screenParamsSlice';
 
 import { IFavoritesInput } from '../../api/types';
 
-import { FavoritesForm } from '../../components/index';
-import { debounce } from '../../components/utils/utils';
+import { FavoritesForm } from '../../components';
 
 import styles from './FavoritesScreen.module.css';
 
@@ -54,22 +53,17 @@ const FavoritesScreen: FC<FavoritesScreenProps> = () => {
     if (!isMobile) return;
 
     window.scrollTo(0, favoriteScreenYOffset);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [window.pageYOffset]);
 
-  useEffect (() => {
+  useLayoutEffect (() => {
     if (!isMobile) return;
 
-    const setCurrentPageYOffset = () => {
+    return () => {
+      if (favoriteScreenYOffset === window.pageYOffset) return;
       reduxDispatch(setFavoriteScreenYOffset(window.pageYOffset));
     };
-    const handleWindowScroll = debounce(setCurrentPageYOffset, 250);
-
-    window.addEventListener('scroll', handleWindowScroll);
-
-    return () => {
-      window.removeEventListener('scroll', handleWindowScroll);
-    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMobile, reduxDispatch]);
 
   const showConfirm = (title: string, id: string) => {

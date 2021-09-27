@@ -1,0 +1,28 @@
+.videoList {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 0;
+}
+
+.videoListItem {
+  list-style: none;
+}
+
+.videoLink,
+.channelLink,
+.viewsCount {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.videoLink {
+  font-weight: 500;
+}
+
+.channelLink {
+  font-weight: 400;
+}

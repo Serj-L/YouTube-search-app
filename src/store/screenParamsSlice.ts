@@ -4,12 +4,14 @@ interface IScreenParamsState {
   isMobile: boolean;
   searchScreenYOffset: number;
   favoriteScreenYOffset: number;
+  searchResultsViewType: string;
 }
 
 const initialState = {
   isMobile: false,
   searchScreenYOffset: 0,
   favoriteScreenYOffset: 0,
+  searchResultsViewType: 'list',
 } as IScreenParamsState;
 
 const screenParams = createSlice({
@@ -25,8 +27,16 @@ const screenParams = createSlice({
     setFavoriteScreenYOffset(state, action: PayloadAction<number>) {
       state.favoriteScreenYOffset = action.payload;
     },
+    setSearchResultsViewType(state, action: PayloadAction<string>) {
+      state.searchResultsViewType = action.payload;
+    },
   },
 });
 
-export const { setIsMobile, setSearchScreenYOffset, setFavoriteScreenYOffset } = screenParams.actions;
+export const {
+  setIsMobile,
+  setSearchScreenYOffset,
+  setFavoriteScreenYOffset,
+  setSearchResultsViewType,
+} = screenParams.actions;
 export default screenParams.reducer;

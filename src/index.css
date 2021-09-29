@@ -14,6 +14,13 @@ a.ant-typography {
   padding-top: 4px;
 }
 
+.ant-list-item-meta-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
 /* adaptive */
 @media (max-width: 409px) {
   .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu {

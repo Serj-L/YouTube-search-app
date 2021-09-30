@@ -1,5 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+import { detectMobile } from '../components/utils/utils';
+
 interface IScreenParamsState {
   isMobile: boolean;
   searchScreenYOffset: number;
@@ -8,7 +10,7 @@ interface IScreenParamsState {
 }
 
 const initialState = {
-  isMobile: false,
+  isMobile: detectMobile(),
   searchScreenYOffset: 0,
   favoriteScreenYOffset: 0,
   searchResultsViewType: 'list',
@@ -18,9 +20,6 @@ const screenParams = createSlice({
   name: 'screenParams',
   initialState,
   reducers: {
-    setIsMobile(state, action: PayloadAction<boolean>) {
-      state.isMobile = action.payload;
-    },
     setSearchScreenYOffset(state, action: PayloadAction<number>) {
       state.searchScreenYOffset = action.payload;
     },
@@ -34,7 +33,6 @@ const screenParams = createSlice({
 });
 
 export const {
-  setIsMobile,
   setSearchScreenYOffset,
   setFavoriteScreenYOffset,
   setSearchResultsViewType,

@@ -12,3 +12,9 @@ export const declOfNum = (number: number, words: string[]): string => {
 
   return words[2];
 };
+
+export const detectMobile = (maxWidth: number = 991): boolean => {
+  const devices = new RegExp('Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini', 'i');
+
+  return devices.test(navigator.userAgent) || window.innerWidth <= maxWidth;
+};

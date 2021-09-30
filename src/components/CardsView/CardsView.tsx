@@ -60,9 +60,10 @@ const CardsView: FC<CardsViewProps> = ({ data }) => {
                         {item.title} | {item.description}
                       </Typography.Link>
                     </Typography.Paragraph>
-                    <Typography.Text
+                    <Typography.Paragraph
                       className={styles.viewsCount}
                       style={{ color: 'rgba(23, 23, 25, 0.3)' }}
+                      ellipsis={{ rows: 1, expandable: false }}
                     >
                       <Typography.Link
                         className={styles.channelLink}
@@ -76,7 +77,7 @@ const CardsView: FC<CardsViewProps> = ({ data }) => {
                       {Number(item.viewCount) / 1000 >= 1 ?
                         `${numFormatter.format(Math.round(Number(item.viewCount) / 1000))} тыс. просмотров` :
                         `${item.viewCount} ${declOfNum(Number(item.viewCount),['просмотр', 'просмотра', 'просмотров'])}`}
-                    </Typography.Text>
+                    </Typography.Paragraph>
                   </>
                 }
               />

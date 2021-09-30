@@ -1,23 +1,23 @@
 {
   "files": {
     "main.css": "/YouTube-search-app/static/css/main.586bcdef.chunk.css",
-    "main.js": "/YouTube-search-app/static/js/main.06b96ece.chunk.js",
-    "main.js.map": "/YouTube-search-app/static/js/main.06b96ece.chunk.js.map",
+    "main.js": "/YouTube-search-app/static/js/main.d459475e.chunk.js",
+    "main.js.map": "/YouTube-search-app/static/js/main.d459475e.chunk.js.map",
     "runtime-main.js": "/YouTube-search-app/static/js/runtime-main.bab2ccc0.js",
     "runtime-main.js.map": "/YouTube-search-app/static/js/runtime-main.bab2ccc0.js.map",
     "static/css/2.5f5f9133.chunk.css": "/YouTube-search-app/static/css/2.5f5f9133.chunk.css",
-    "static/js/2.0545399f.chunk.js": "/YouTube-search-app/static/js/2.0545399f.chunk.js",
-    "static/js/2.0545399f.chunk.js.map": "/YouTube-search-app/static/js/2.0545399f.chunk.js.map",
+    "static/js/2.fb7ba3d7.chunk.js": "/YouTube-search-app/static/js/2.fb7ba3d7.chunk.js",
+    "static/js/2.fb7ba3d7.chunk.js.map": "/YouTube-search-app/static/js/2.fb7ba3d7.chunk.js.map",
     "index.html": "/YouTube-search-app/index.html",
     "static/css/2.5f5f9133.chunk.css.map": "/YouTube-search-app/static/css/2.5f5f9133.chunk.css.map",
     "static/css/main.586bcdef.chunk.css.map": "/YouTube-search-app/static/css/main.586bcdef.chunk.css.map",
-    "static/js/2.0545399f.chunk.js.LICENSE.txt": "/YouTube-search-app/static/js/2.0545399f.chunk.js.LICENSE.txt"
+    "static/js/2.fb7ba3d7.chunk.js.LICENSE.txt": "/YouTube-search-app/static/js/2.fb7ba3d7.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.bab2ccc0.js",
     "static/css/2.5f5f9133.chunk.css",
-    "static/js/2.0545399f.chunk.js",
+    "static/js/2.fb7ba3d7.chunk.js",
     "static/css/main.586bcdef.chunk.css",
-    "static/js/main.06b96ece.chunk.js"
+    "static/js/main.d459475e.chunk.js"
   ]
 }
